@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git clone:*)",
+      "Bash(tree:*)",
+      "Bash(claude mcp add:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(chmod:*)",
+      "WebSearch",
+      "mcp__archon__health_check",
+      "mcp__archon__find_tasks",
+      "mcp__archon__find_projects",
+      "mcp__archon__manage_project",
+      "mcp__archon__manage_task",
+      "Bash(dir:*)",
+      "Bash(echo:*)",
+      "Bash(find:*)",
+      "Bash(findstr /v /i \"node_modules .git .venv __pycache__ .pytest_cache\")"
+    ]
+  }
+}
