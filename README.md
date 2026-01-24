@@ -617,24 +617,191 @@ Want to contribute to this system? Use the PIV Loop:
 ## Features
 
 ### Core Workflow Commands
-- **`/prime`** - Export complete codebase context for AI analysis
-- **`/discovery`** - Explore ideas, inspiration, and opportunities with RAG/web research
-- **`/planning {feature}`** - Generate PRD from discovery insights
-- **`/development {feature}`** - Generate technical specifications with stack recommendations
-- **`/task-planning {feature}`** - Create implementation plans with PRP and Archon tasks
-- **`/execution {feature}`** - Execute tasks sequentially with progress tracking
-- **`/review {feature}`** - AI-powered code review with quality, security, and performance analysis
-- **`/test {feature}`** - Run tests with AI-suggested fixes
-- **`/workflow {feature}`** - Execute complete pipeline with resume support
+
+| Command | Description | What It Does |
+|---------|-------------|--------------|
+| **`/prime`** | Export codebase for context gathering | - Scans entire codebase structure<br>- Generates structured markdown output<br>- Creates snapshot in `context/prime-*.md`<br>- Token-efficient context for AI analysis |
+| **`/discovery`** | Explore ideas and opportunities | - Searches Archon RAG knowledge base<br>- Uses Web MCP for external research<br>- Explores AI agent patterns and opportunities<br>- Digests findings into `discovery/ideas.md` |
+| **`/planning {feature}`** | Generate PRD from insights | - Reads discovery insights<br>- Creates Product Requirements Document<br>- Defines user stories and acceptance criteria<br>- Stores in `features/{feature}/prd.md` |
+| **`/development {feature}`** | Generate technical specifications | - Analyzes PRD requirements<br>- Researches technology stack options<br>- Creates architecture diagrams<br>- Stores in `features/{feature}/tech-spec.md` |
+| **`/task-planning {feature}`** | Create implementation plans | - Combines PRD + TECH SPEC + codebase patterns<br>- Generates PRP (Plan Reference Protocol)<br>- Creates Archon tasks with dependencies<br>- Loads relevant references selectively |
+| **`/execution {feature}`** | Execute tasks sequentially | - Follows PRP blueprint step-by-step<br>- Marks tasks: todo → doing → review → done<br>- Uses Archon for progress tracking<br>- Executes implementation with focused context |
+| **`/review {feature}`** | AI-powered code review | - Analyzes code quality, security, performance<br>- Identifies potential issues and anti-patterns<br>- Generates review report in `reviews/`<br>- Provides actionable recommendations |
+| **`/test {feature}`** | Run tests with AI fixes | - Executes test suite<br>- Detects errors and failures<br>- AI suggests fixes for failing tests<br>- Generates coverage reports |
+| **`/workflow {feature}`** | Execute complete pipeline | - Runs all phases automatically<br>- Supports resume from any phase<br>- Tracks progress across entire workflow<br>- Seamless integration of all commands |
 
 ### Smart Reference Library
-- **`/learn {topic}`** - Search RAG/web, digest insights, store for reuse
-- **`/learn-health`** - Check library coverage and get suggestions
+
+| Command | Description | What It Does |
+|---------|-------------|--------------|
+| **`/learn {topic}`** | Search, digest, and save insights | - Searches Archon RAG knowledge base<br>- Uses Web MCP for external sources<br>- Digests findings into structured insights<br>- Stores to Supabase `archon_references` table |
+| **`/learn-health`** | Check library health | - Queries reference library statistics<br>- Shows category coverage (python, react, etc.)<br>- Identifies gaps and suggests improvements<br>- Displays token savings metrics |
+
+**How /learn works:**
+```
+Input topic → RAG search + Web search → Digest insights → Store to Supabase
+Example: /learn python async patterns
+→ Searches: Archon KB + web for "python async"
+→ Digests: 3-5 key insights + code examples
+→ Stores: category='python', tags=['python', 'async']
+→ Reusable: Loads selectively during tasks
+```
 
 ### Utility Commands
-- **`/check`** - Comprehensive codebase health check, cleanup, and documentation updates
-- **`/update-index`** - Update directory INDEX.md files
-- **`/update-status`** - Update feature STATUS.md tracking
+
+| Command | Description | What It Does |
+|---------|-------------|--------------|
+| **`/check`** | Codebase health check & cleanup | - Validates required files exist<br>- Removes OS artifacts (nul, .DS_Store)<br>- Cleans up old context exports (keeps latest 2-3)<br>- Removes completed project artifacts<br>- Updates documentation consistency<br>- Generates health report with score |
+| **`/update-index`** | Update INDEX.md files | - Scans directories for files<br>- Updates or regenerates INDEX.md<br>- Lists all files in organized format<br>- Keeps navigation current |
+| **`/update-status`** | Update STATUS.md tracking | - Updates phase progress in STATUS.md<br>- Lists artifacts created per phase<br>- Documents next steps and blockers<br>- Syncs with actual completion state |
+
+### Command Reference (Full Details)
+
+#### `/prime` - Context Export
+**Purpose**: Export entire codebase for AI analysis
+**Output**: `context/prime-{timestamp}.md`
+**Use when**: Starting new project, need codebase context
+**Contains**:
+- Directory structure with file descriptions
+- Key file contents (commands, templates, docs)
+- Excludes: node_modules, .git, build artifacts
+**Size**: 10,000-50,000 tokens (large but comprehensive)
+
+#### `/discovery` - Opportunity Exploration
+**Purpose**: Explore ideas using RAG and web research
+**Output**: `discovery/ideas.md`
+**Use when**: Looking for new features, opportunities, inspiration
+**Research sources**:
+- Archon RAG knowledge base
+- Web search (web-search-prime)
+- GitHub repositories (zread)
+- Documentation (web-reader)
+
+#### `/planning {feature}` - PRD Generation
+**Purpose**: Create Product Requirements Document
+**Output**: `features/{feature}/prd.md`
+**Use when**: You have an idea and need formal requirements
+**Contains**:
+- Goal and success criteria
+- User stories with acceptance criteria
+- Functional requirements
+- Non-functional requirements
+- Dependencies and risks
+
+#### `/development {feature}` - Technical Specification
+**Purpose**: Generate technical architecture and stack
+**Output**: `features/{feature}/tech-spec.md`
+**Use when**: PRD is complete, need technical design
+**Contains**:
+- Architecture diagrams
+- Technology stack recommendations
+- API design
+- Database schema
+- Integration points
+- Security considerations
+
+#### `/task-planning {feature}` - Implementation Planning
+**Purpose**: Create actionable tasks with PRP
+**Output**: `features/{feature}/prp.md` + Archon tasks
+**Use when**: TECH SPEC complete, ready to implement
+**Contains**:
+- Implementation blueprint (ordered steps)
+- Codebase patterns to follow
+- Reference library categories to load
+- Archon tasks with priorities and dependencies
+- Validation checklist
+
+#### `/execution {feature}` - Task Execution
+**Purpose**: Execute tasks one-by-one with tracking
+**Output**: Completed code + updated task status
+**Use when**: PRP created, ready to code
+**Process**:
+1. Get next task (status: todo)
+2. Mark as doing
+3. Load selective context
+4. Implement following PRP
+5. Mark as review
+6. Validate and test
+7. Mark as done
+8. Repeat until all tasks complete
+
+#### `/review {feature}` - Code Review
+**Purpose**: AI-powered quality analysis
+**Output**: `reviews/{feature}.md`
+**Use when**: Implementation complete
+**Analyzes**:
+- Code quality and readability
+- Security vulnerabilities
+- Performance bottlenecks
+- Best practices violations
+- Testing coverage
+- Documentation completeness
+
+#### `/test {feature}` - Test Execution
+**Purpose**: Run tests with AI-suggested fixes
+**Output**: `testing/{feature}-results.md`
+**Use when**: Review complete, need validation
+**Features**:
+- Runs test suite
+- Detects failures and errors
+- AI analyzes root causes
+- Suggests specific fixes
+- Re-runs to verify fixes
+
+#### `/workflow {feature}` - Complete Pipeline
+**Purpose**: Execute all phases automatically
+**Output**: Complete feature from idea to tested code
+**Use when**: Want hands-off development
+**Phases** (all or resume from any):
+1. Discovery → 2. Planning → 3. Development → 4. Task Planning → 5. Execution → 6. Review → 7. Test
+**Flags**: `--from-{phase}` to resume from specific phase
+
+#### `/learn {topic}` - Learn & Store
+**Purpose**: Build reference library with digested insights
+**Output**: Stored in Supabase `archon_references`
+**Use when**: Want to save knowledge for future use
+**Process**:
+1. Search Archon RAG (2-5 keywords)
+2. Search Web MCP if needed
+3. Digest into insights (3-5 bullets, code examples)
+4. Present for approval
+5. Store to database
+**Result**: Token-efficient, reusable knowledge
+
+#### `/learn-health` - Library Diagnostics
+**Purpose**: Check reference library coverage
+**Output**: Health report with statistics
+**Use when**: Want to know library state
+**Shows**:
+- References per category (python, mcp, react, etc.)
+- Tag distribution
+- Coverage gaps
+- Token savings achieved
+- Suggestions for improvement
+
+#### `/check` - Health Check & Cleanup
+**Purpose**: Maintain clean, healthy repository
+**Output**: Health report + fixes applied
+**Use when**: Repository feels cluttered, want cleanup
+**Checks**:
+- Required files present (.gitignore, LICENSE, etc.)
+- No OS artifacts (nul, .DS_Store, Thumbs.db)
+- Context exports cleaned (keeps latest 2-3)
+- Project artifacts removed if complete
+- Documentation synchronized
+**Result**: Clean repo, health score 0-100%
+
+#### `/update-index` - Update Navigation
+**Purpose**: Keep INDEX.md files current
+**Output**: Updated INDEX.md in directories
+**Use when**: New files added, navigation outdated
+**Updates**: Root INDEX.md, features/, context/, discovery/, etc.
+
+#### `/update-status` - Update Progress Tracking
+**Purpose**: Sync STATUS.md with actual progress
+**Output**: Updated STATUS.md files
+**Use when**: Phases complete, need to update tracking
+**Updates**: Phase status, artifacts, next steps
 
 ## Quick Start
 
