@@ -54,7 +54,7 @@ This is a markdown-based command system for orchestrating AI-assisted developmen
 | **Root/** | PRD.md, MVP.md, TECH SPEC.md | Project artifacts (current) | ✅ Delete after project complete |
 | **Root/** | CLAUDE.md, README.md, INDEX.md | System documentation | ❌ NEVER delete |
 | **features/{feature}/** | prd.md, tech-spec.md, prp.md | Feature artifacts | ✅ Delete after feature complete |
-| **context/** | prime-*.md | Temporary exports | ✅ Delete old exports |
+| **context/** | prime-*.md | Context exports | ✅ Keep latest 2-3, delete rest |
 | **discovery/** | ideas.md | Opportunity research | Keep or archive |
 
 ### Cleanup Workflow
