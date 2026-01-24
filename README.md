@@ -2015,3 +2015,8 @@ A: Three steps:
 **Template Version**: 1.1
 **Last Updated**: 2026-01-25
 **MCP Integration**: Archon + Supabase + Web MCP servers
+
+## Connect
+
+- **Website**: https://ryanjosebrosas.xyz
+- **LinkedIn**: https://linkedin.com/in/ryanjosebrosas
