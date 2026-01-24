@@ -26,9 +26,13 @@ Run systematic checks across the codebase:
 - `README.md` - Should exist with project documentation
 - `CLAUDE.md` - Should exist with developer guidelines
 - `INDEX.md` - Should exist in root and subdirectories
-- `PRD.md`, `MVP.md`, `TECH SPEC.md` - **SYSTEM DOCUMENTATION - NEVER DELETE**
 
-**1.2 Check for artifact files:**
+**1.2 Check for project artifacts to clean up:**
+- `PRD.md` - Project requirements (delete if project complete)
+- `MVP.md` - Project MVP definition (delete if project complete)
+- `TECH SPEC.md` - Project technical spec (delete if project complete)
+
+**1.3 Check for artifact files:**
 - `nul` - Windows artifact (45 bytes typically)
 - `.DS_Store` - macOS artifact
 - `Thumbs.db` - Windows thumbnail cache
@@ -73,6 +77,7 @@ Apply fixes for common issues:
 **2.3 Delete artifact files:**
 ```bash
 # Remove nul, .DS_Store, Thumbs.db, *.tmp, *.temp
+# Remove PRD.md, MVP.md, TECH SPEC.md if project is complete
 ```
 
 **2.4 Update outdated INDEX.md entries:**
@@ -175,6 +180,14 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 | `CLAUDE.md` | Developer guidelines | Should exist |
 | `INDEX.md` | Root navigation | Should exist |
 
+### Project Artifacts (Cleaned Up When Complete)
+
+| File | Purpose | Cleanup Condition |
+|------|---------|-------------------|
+| `PRD.md` | Project requirements | Project complete, no active tasks |
+| `MVP.md` | Project MVP definition | Project complete, no active tasks |
+| `TECH SPEC.md` | Project technical spec | Project complete, no active tasks |
+
 ### Artifact Patterns
 
 | Pattern | Description | Action |
@@ -238,12 +251,17 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ### File Preservation Rules
 
 **NEVER DELETE (System Documentation)**:
-- `PRD.md`, `MVP.md`, `TECH SPEC.md`, `CLAUDE.md` - Root system docs
-- `README.md`, `INDEX.md`, `LICENSE` - Essential project files
+- `CLAUDE.md`, `README.md`, `INDEX.md`, `LICENSE` - Permanent system files
 - `.claude/commands/*.md` - Workflow command definitions
 
-**SAFE TO CLEAN**:
+**CLEAN UP (Project/Feature Artifacts)**:
+- `PRD.md`, `MVP.md`, `TECH SPEC.md` - Root project artifacts (delete when project complete)
+- `features/{name}/*` - Feature artifacts (delete when feature complete)
 - `context/prime-*.md` - Old context exports (keep latest 2-3)
 - `nul`, `.DS_Store`, `Thumbs.db` - OS artifacts
 - `*.tmp`, `*.temp` - Temporary files
-- Feature artifacts in `features/{name}/` after project completion
+
+**Before deleting project artifacts, check:**
+- Is the project/feature marked as complete in STATUS.md?
+- Are there any active tasks in Archon?
+- Has the code been reviewed and tested?

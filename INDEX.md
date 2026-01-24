@@ -36,24 +36,40 @@ This is a markdown-based command system for orchestrating AI-assisted developmen
 
 ## Core Documents (Root Level)
 
-**These are SYSTEM DOCUMENTATION - they describe the AI Coding System itself and should NEVER be deleted:**
-
-- **[MVP.md](./MVP.md)** - Minimum Viable Product definition for this system
-- **[PRD.md](./PRD.md)** - Product Requirements Document for this system
-- **[TECH SPEC.md](./TECH%20SPEC.md)** - Technical Specification for this system
+**Permanent System Documentation:**
 - **[CLAUDE.md](./CLAUDE.md)** - Developer guidelines and best practices
 
-> **⚠️ IMPORTANT**: These root-level files document the AI Coding System itself.
-> Feature-specific artifacts go in `features/{feature-name}/` directories.
+**Project/Feature Artifacts (clean up after completion):**
+- **[MVP.md](./MVP.md)** - Minimum Viable Product for current project
+- **[PRD.md](./PRD.md)** - Product Requirements for current project
+- **[TECH SPEC.md](./TECH%20SPEC.md)** - Technical Specification for current project
+
+> **⚠️ IMPORTANT**: Root `PRD.md`, `MVP.md`, `TECH SPEC.md` are **project-specific artifacts**.
+> Delete them after project completion. Use `/check` cleanup to remove them.
 
 ### File Types Explained
 
 | Location | File Type | Purpose | Cleanup Behavior |
 |----------|-----------|---------|------------------|
-| **Root/** | PRD.md, MVP.md, TECH SPEC.md | System documentation | ❌ NEVER delete |
-| **features/{feature}/** | prd.md, tech-spec.md, prp.md | Feature artifacts | ✅ Delete after completion |
+| **Root/** | PRD.md, MVP.md, TECH SPEC.md | Project artifacts (current) | ✅ Delete after project complete |
+| **Root/** | CLAUDE.md, README.md, INDEX.md | System documentation | ❌ NEVER delete |
+| **features/{feature}/** | prd.md, tech-spec.md, prp.md | Feature artifacts | ✅ Delete after feature complete |
 | **context/** | prime-*.md | Temporary exports | ✅ Delete old exports |
 | **discovery/** | ideas.md | Opportunity research | Keep or archive |
+
+### Cleanup Workflow
+
+When a project/feature is complete:
+```bash
+# Run cleanup to remove project artifacts
+/check
+
+# This will clean up:
+# - Root PRD.md, MVP.md, TECH SPEC.md (if project complete)
+# - Completed feature directories
+# - Old context exports
+# - OS artifacts (nul, .DS_Store, etc.)
+```
 
 ## Quick Start
 
