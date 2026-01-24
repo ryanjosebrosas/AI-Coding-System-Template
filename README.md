@@ -425,6 +425,195 @@ Purpose → Clear scope → Detailed breakdown → Actionable steps
 5. **Recoverable**: Can interrupt and resume at any task
 6. **Token Efficient**: Only load context for current task
 
+### PIV Loop Applies to This System Too
+
+**This AI Coding System itself is built and improved using the PIV Loop methodology.**
+
+The system is designed to **self-improve** - you can use the exact same PIV workflow to enhance this system:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│          USING PIV LOOP TO IMPROVE THIS AI CODING SYSTEM                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  EXAMPLE 1: Adding a New Command to the System                                  │
+│  ───────────────────────────────────────────────────────────────────────────  │
+│                                                                                 │
+│  PURPOSE PHASE                                                                  │
+│  ─────────────                                                                  │
+│  Idea: "Add /deploy command for automated deployment"                           │
+│  → /discovery → Identify deployment automation as opportunity                   │
+│  → /planning deploy-command → Create PRD for deploy command                     │
+│  → /development deploy-command → Design command architecture                    │
+│  → manage_project("create", title="Deploy Command Feature")                     │
+│                                                                                 │
+│  IMPLEMENTATION PHASE                                                           │
+│  ────────────────────                                                           │
+│  Details:                                                                        │
+│  - Command should integrate with existing workflow                              │
+│  - Support multiple deployment targets (Docker, cloud, etc.)                    │
+│  - Include rollback capability                                                  │
+│                                                                                 │
+│  Actionable Steps (Archon Tasks):                                               │
+│  → Task 1: Create .claude/commands/deploy.md command file                      │
+│  → Task 2: Implement deployment logic                                           │
+│  → Task 3: Add rollback mechanism                                               │
+│  → Task 4: Write tests for deploy command                                      │
+│  → Task 5: Update README with /deploy documentation                            │
+│                                                                                 │
+│  VALIDATION PHASE                                                               │
+│  ────────────────                                                               │
+│  AI executes each task one by one:                                              │
+│  → Creates command file following existing patterns                             │
+│  → Implements deployment using system's reference library                       │
+│  → Validates each step before moving to next                                    │
+│  → Tests and validates the complete feature                                     │
+│                                                                                 │
+│  Result: New command seamlessly integrated into the system!                     │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│          EXAMPLE 2: IMPROVING THE REFERENCE LIBRARY                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  PURPOSE PHASE                                                                  │
+│  ─────────────                                                                  │
+│  Idea: "The system lacks TypeScript patterns references"                        │
+│  → /learn-health → Reveals gap: typescript (0 references)                      │
+│  → /planning typescript-library → Create PRD for TS reference expansion        │
+│                                                                                 │
+│  IMPLEMENTATION PHASE                                                           │
+│  ────────────────────                                                           │
+│  Actionable Steps:                                                              │
+│  → Task 1: Learn TypeScript utility types (/learn ts utility types)            │
+│  → Task 2: Learn TypeScript generics (/learn ts generics)                      │
+│  → Task 3: Learn TypeScript patterns (/learn ts patterns)                      │
+│  → Task 4: Update PRP templates to include typescript category                 │
+│  → Task 5: Validate reference loading works correctly                          │
+│                                                                                 │
+│  VALIDATION PHASE                                                               │
+│  ────────────────                                                               │
+│  AI executes:                                                                   │
+│  → Searches RAG and web for TypeScript best practices                          │
+│  → Digests findings and stores to Supabase                                     │
+│  → Updates templates to load TS references when needed                         │
+│  → Validates that references load selectively                                  │
+│                                                                                 │
+│  Result: System now supports TypeScript development workflows!                  │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│          EXAMPLE 3: ENHANCING MCP INTEGRATION                                  │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  PURPOSE PHASE                                                                  │
+│  ─────────────                                                                  │
+│  Idea: "Add GitHub MCP integration for repository operations"                    │
+│  → /discovery → Found opportunity to improve code analysis                      │
+│  → /planning github-mcp → Create PRD for GitHub integration                    │
+│                                                                                 │
+│  IMPLEMENTATION PHASE                                                           │
+│  ────────────────────                                                           │
+│  Actionable Steps:                                                              │
+│  → Task 1: Configure GitHub MCP server in .claude/config.json                  │
+│  → Task 2: Update README with GitHub MCP documentation                        │
+│  → Task 3: Add GitHub tools to workflow commands                               │
+│  → Task 4: Create example using GitHub MCP for repo analysis                   │
+│  → Task 5: Test integration with real repository                               │
+│                                                                                 │
+│  VALIDATION PHASE                                                               │
+│  ────────────────                                                               │
+│  AI executes:                                                                   │
+│  → Adds MCP server configuration                                                │
+│  → Updates documentation to include new capabilities                            │
+│  → Enhances discovery and review commands to use GitHub tools                  │
+│  → Validates integration works correctly                                       │
+│                                                                                 │
+│  Result: System now has GitHub repository analysis capabilities!                │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### The System Eats Its Own Dog Food
+
+**This AI Coding System is built using itself.**
+
+| System Component | Built With | How PIV Applies |
+|-----------------|------------|-----------------|
+| **Workflow Commands** | /workflow command | PIV loop to create new commands |
+| **Reference Library** | /learn command | PIV loop to expand knowledge |
+| **Documentation** | /planning, /development | PIV loop to improve docs |
+| **MCP Integrations** | Archon + research | PIV loop to add new MCP servers |
+| **This README** | System itself | PIV loop to document improvements |
+
+**Key Insight**: Every feature of this system can be improved using the PIV Loop methodology. The system is **self-sustaining** and **self-improving**.
+
+### Improving This System: Quick Start
+
+Want to contribute to this system? Use the PIV Loop:
+
+```bash
+# 1. PURPOSE: Identify improvement opportunity
+/discovery
+# → Find gap: "Need X feature", "Y documentation incomplete"
+
+# 2. PLAN: Create requirements
+/planning {improvement-name}
+/development {improvement-name}
+
+# 3. BREAK DOWN: Create actionable steps
+/task-planning {improvement-name}
+# → Generates tasks with clear priorities
+
+# 4. EXECUTE: Let AI follow tasks
+/execution {improvement-name}
+# → AI executes tasks one by one
+
+# 5. VALIDATE: Review and test
+/review {improvement-name}
+/test {improvement-name}
+```
+
+**Example: Adding /deploy Command**
+```bash
+# Use the system to improve the system!
+/discovery
+→ "Add automated deployment capabilities"
+
+/planning deploy-command
+→ Creates PRD for deploy feature
+
+/development deploy-command
+→ Designs deployment architecture
+
+/task-planning deploy-command
+→ Creates 5 tasks:
+  1. Create command file
+  2. Implement deployment logic
+  3. Add rollback
+  4. Write tests
+  5. Update docs
+
+/execution deploy-command
+→ AI executes tasks 1-5 one by one
+
+/review deploy-command
+→ Code quality check
+
+/test deploy-command
+→ Validate deployment works
+
+# Result: System now has /deploy command!
+```
+
+**This is the power of PIV Loop - the system improves itself systematically.**
+
 ## Features
 
 ### Core Workflow Commands
