@@ -4,15 +4,14 @@ description: "Transform discovery insights into comprehensive PRD (Product Requi
 phase: planning
 dependencies: [discovery]
 outputs:
-  - path: "features/{feature-name}/prd.md"
-    description: "Product Requirements Document with features, user stories, acceptance criteria, and technical requirements"
-  - path: "features/{feature-name}/STATUS.md"
-    description: "Feature status tracking file initialized with Planning phase"
-  - path: "features/INDEX.md"
-    description: "Updated index of all features"
+  - path: "PRD.md"
+    description: "Product Requirements Document at root with features, user stories, acceptance criteria, and technical requirements"
 inputs:
   - path: "discovery/discovery-{timestamp}.md"
     description: "Most recent discovery document with ideas, opportunities, and needs analysis"
+    required: true
+  - path: "MVP.md"
+    description: "MVP definition at root"
     required: true
 ---
 
@@ -104,7 +103,7 @@ Transform discovery insights into a comprehensive PRD (Product Requirements Docu
 
 ## Output Format
 
-**File**: `features/{feature-name}/prd.md`
+**File**: `PRD.md` (at root)
 
 **Structure**:
 ```markdown

@@ -10,6 +10,8 @@ outputs:
     description: "Task plan with task IDs, dependencies, and execution order"
   - path: "features/{feature-name}/STATUS.md"
     description: "Updated feature status tracking file"
+  - path: "features/{feature-name}/execution/"
+    description: "Execution folder with individual task files (deleted as tasks complete)"
 inputs:
   - path: "context/prime-{timestamp}.md"
     description: "Most recent codebase export from Prime command"
@@ -17,11 +19,14 @@ inputs:
   - path: "discovery/discovery-{timestamp}.md"
     description: "Most recent discovery document"
     required: false
-  - path: "features/{feature-name}/prd.md"
-    description: "Product Requirements Document"
+  - path: "MVP.md"
+    description: "MVP definition at root"
     required: true
-  - path: "features/{feature-name}/tech-spec.md"
-    description: "Technical Specification"
+  - path: "PRD.md"
+    description: "Product Requirements Document at root"
+    required: true
+  - path: "TECH-SPEC.md"
+    description: "Technical Specification at root"
     required: true
 ---
 
@@ -196,7 +201,38 @@ Break down implementation tasks and create in Archon MCP:
 
 **Expected Result**: Tasks created in Archon MCP and task plan document generated.
 
-### Step 6: Save Documents and Update Status
+### Step 6: Create Execution Folder with Task Files
+
+Create local execution folder with individual task files for visibility and tracking:
+
+1. **Create execution folder**:
+   - Create `features/{feature-name}/execution/` directory
+
+2. **Create INDEX.md**:
+   - List all tasks with links to individual files
+   - Include project ID and workflow instructions
+
+3. **Create individual task files**:
+   - For each task, create `{order}-{task-slug}.md`
+   - Include: Task ID, Priority, Status, Dependencies
+   - Include: Description, Steps, Deliverables
+   - Include: "On Completion" section with:
+     - Command to mark done in Archon
+     - Instruction to delete the file
+     - Next task reference
+
+4. **Task file naming convention**:
+   - Format: `{order:02d}-{task-slug}.md`
+   - Example: `01-run-sql-migration.md`, `02-create-learn-command.md`
+
+**Expected Result**: Execution folder created with task files for local tracking.
+
+**Workflow**: 
+- Tasks exist in both Archon (source of truth) AND execution folder (local visibility)
+- When task completes: Mark done in Archon → Delete the file
+- When all task files deleted: Feature is complete
+
+### Step 7: Save Documents and Update Status
 
 Save PRP and task plan, update feature STATUS:
 

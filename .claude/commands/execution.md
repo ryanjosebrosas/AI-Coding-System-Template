@@ -15,6 +15,9 @@ inputs:
   - path: "features/{feature-name}/prp.md"
     description: "PRP document with implementation guidance"
     required: true
+  - path: "features/{feature-name}/execution/"
+    description: "Execution folder with individual task files"
+    required: true
 ---
 
 # Execution Command
@@ -70,24 +73,31 @@ Execute each task following dependencies:
 
 1. **For each task in task plan**:
    - Check task dependencies are complete
+   - Read task file from `execution/{order}-{task-slug}.md`
    - Mark task as "Doing" in Archon: `manage_task("update", task_id="...", status="doing")`
    - Load task context from PRP
-   - Execute task following PRP Implementation Blueprint
+   - Execute task following PRP Implementation Blueprint and task file steps
 
 2. **Task Execution**:
    - Read PRP section for current task
-   - Follow step-by-step instructions
+   - Follow step-by-step instructions from task file
    - Create/modify files as specified
    - Run validation commands if specified
 
 3. **Update Progress**:
    - Log task completion in `execution.md`
-   - Mark task as "Review" in Archon: `manage_task("update", task_id="...", status="review")`
+   - Mark task as "Done" in Archon: `manage_task("update", task_id="...", status="done")`
+   - **Delete the task file** from `execution/` folder
    - Update STATUS.md with progress
+   - Update `execution/INDEX.md` to reflect completion
 
 4. **Checkpoint State**:
    - Save checkpoint after each task completes
    - Store current state for resume capability
+
+**Task File Cleanup**:
+- When task completes successfully, delete `execution/{order}-{task-slug}.md`
+- When all task files are deleted (only INDEX.md remains), feature is complete
 
 **Expected Result**: Tasks executed sequentially, progress tracked in Archon and STATUS.md.
 
@@ -212,3 +222,6 @@ Run validation as specified in PRP:
 - Checkpointing enables resume after interruptions
 - Follow PRP Implementation Blueprint for each task
 - Run PRP Validation Loop after task completion
+- **Delete task files** from `execution/` folder after completion
+- When all task files deleted, feature is complete
+- Tasks exist in both Archon (source of truth) AND execution folder (local visibility)

@@ -4,13 +4,14 @@ description: "Analyze PRD requirements and generate comprehensive Tech Spec with
 phase: development
 dependencies: [planning]
 outputs:
-  - path: "features/{feature-name}/tech-spec.md"
-    description: "Technical Specification with system architecture, technology stack, implementation details, and recommendations"
-  - path: "features/{feature-name}/STATUS.md"
-    description: "Updated feature status tracking file"
+  - path: "TECH-SPEC.md"
+    description: "Technical Specification at root with system architecture, technology stack, implementation details, and recommendations"
 inputs:
-  - path: "features/{feature-name}/prd.md"
-    description: "Product Requirements Document with features, user stories, and technical requirements"
+  - path: "PRD.md"
+    description: "Product Requirements Document at root"
+    required: true
+  - path: "MVP.md"
+    description: "MVP definition at root"
     required: true
 ---
 
@@ -102,7 +103,7 @@ Analyze PRD requirements and generate a comprehensive Tech Spec (Technical Speci
 
 ## Output Format
 
-**File**: `features/{feature-name}/tech-spec.md`
+**File**: `TECH-SPEC.md` (at root)
 
 **Structure**:
 ```markdown
