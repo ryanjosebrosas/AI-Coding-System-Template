@@ -32,6 +32,7 @@ This system manages the complete development lifecycle through intelligent markd
 - **`/learn-health`** - Check library coverage and get suggestions
 
 ### Utility Commands
+- **`/check`** - Comprehensive codebase health check, cleanup, and documentation updates
 - **`/update-index`** - Update directory INDEX.md files
 - **`/update-status`** - Update feature STATUS.md tracking
 
