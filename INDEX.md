@@ -26,8 +26,12 @@ This is a markdown-based command system for orchestrating AI-assisted developmen
 | `/task-planning {feature}` | Generate PRP and create tasks | Task Planning |
 | `/execution {feature}` | Execute tasks sequentially | Execution |
 | `/review {feature}` | Run code review | Review |
-| `/test {feature}` | Run tests | Test |
-| `/workflow {feature}` | Execute full workflow | All phases |
+| `/test {feature}` | Run tests with AI-suggested fixes | Test |
+| `/workflow {feature}` | Execute full workflow with resume support | All phases |
+| `/learn {topic}` | Search, digest, and store coding insights | Independent |
+| `/learn-health` | Check reference library health and statistics | Independent |
+| `/update-index` | Update directory INDEX.md files | Utility |
+| `/update-status` | Update feature STATUS.md tracking | Utility |
 
 ## Core Documents (Root Level)
 
@@ -52,5 +56,9 @@ Or run `/workflow {feature-name}` to execute all phases automatically.
 ## Status
 
 **Version**: 1.0
-**Last Updated**: 2026-01-23
-**Status**: In Development
+**Last Updated**: 2026-01-24
+**Status**: Stable (Smart Reference Library Completed)
+
+## Completed Features
+
+- **Smart Reference Library** - Token-efficient reference storage with /learn and /learn-health commands (Execution Complete, Awaiting Review/Test)
