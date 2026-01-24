@@ -80,6 +80,351 @@ At the heart of this system is a **token-efficient knowledge management system**
 - Faster response times
 - Reusable knowledge across all features
 
+## The PIV Loop: AI Coding Methodology
+
+At the core of this system is the **PIV Loop** - a structured approach to AI-assisted development that ensures clarity, actionable steps, and systematic progress tracking.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                         THE PIV LOOP - AI CODING METHODOLOGY                    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │  PHASE 1: PURPOSE (Idea → Distinction)                                   │   │
+│  │  ─────────────────────────────────────────────────────────────────────  │   │
+│  │  1. GET IDEA                                                             │   │
+│  │     ┌─────────────┐    ┌─────────────┐    ┌─────────────┐              │   │
+│  │     │ Discovery   │───▶│ Brainstorm  │───▶│ Identify    │              │   │
+│  │     │ Phase       │    │ Opportunities│    │  Concepts   │              │   │
+│  │     └─────────────┘    └─────────────┘    └─────────────┘              │   │
+│  │           │                  │                  │                       │   │
+│  │           ▼                  ▼                  ▼                       │   │
+│  │     "What should      "What problems     "What could                   │   │
+│  │      we build?"        can we solve?"     we create?"                  │   │
+│  │                                                                          │   │
+│  │  2. CLEAR DISTINCTION                                                     │   │
+│  │     ┌─────────────┐    ┌─────────────┐    ┌─────────────┐              │   │
+│  │     │ Define      │───▶│ Clarify     │───▶│ Bound       │              │   │
+│  │     │ Scope       │    │ Boundaries  │    │ Context     │              │   │
+│  │     └─────────────┘    └─────────────┘    └─────────────┘              │   │
+│  │           │                  │                  │                       │   │
+│  │           ▼                  ▼                  ▼                       │   │
+│  │     "What exactly      "What's IN        "What's the                   │   │
+│  │      is this?"         scope?"            context?"                   │   │
+│  │                                                                          │   │
+│  │  Output: Clear, well-defined concept with scope and boundaries           │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                    │                                           │
+│                                    ▼                                           │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │  PHASE 2: IMPLEMENTATION (Details → Actionable Steps)                    │   │
+│  │  ─────────────────────────────────────────────────────────────────────  │   │
+│  │  3. ADD DETAILS                                                          │   │
+│  │     ┌─────────────┐    ┌─────────────┐    ┌─────────────┐              │   │
+│  │     │ Technical   │───▶│ Requirements│───▶│ Constraints │              │   │
+│  │     │ Research    │    │ Analysis    │    │ Definition │              │   │
+│  │     └─────────────┘    └─────────────┘    └─────────────┘              │   │
+│  │           │                  │                  │                       │   │
+│  │           ▼                  ▼                  ▼                       │   │
+│  │     "How do we        "What must        "What limits                  │   │
+│  │      build it?"       it do?"            us?"                        │   │
+│  │                                                                          │   │
+│  │  4. TURN INTO ACTIONABLE STEPS                                           │   │
+│  │     ┌─────────────┐    ┌─────────────┐    ┌─────────────┐              │   │
+│  │     │ Break       │───▶│ Prioritize │───▶│ Create      │              │   │
+│  │     │ Down        │    │ Order      │    │ Dependencies│              │   │
+│  │     └─────────────┘    └─────────────┘    └─────────────┘              │   │
+│  │           │                  │                  │                       │   │
+│  │           ▼                  ▼                  ▼                       │   │
+│  │     "What are the      "What order       "What blocks                  │   │
+│  │      small steps?"      should we do?"    what?"                       │   │
+│  │                                                                          │   │
+│  │  Output: Archon tasks with clear priorities and dependencies             │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                    │                                           │
+│                                    ▼                                           │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │  PHASE 3: VALIDATION (Execute → Verify → Iterate)                       │   │
+│  │  ─────────────────────────────────────────────────────────────────────  │   │
+│  │  5. AI AUTOMATICALLY FOLLOWS TASKS 1 BY 1 (Archon PM)                    │   │
+│  │     ┌─────────────┐    ┌─────────────┐    ┌─────────────┐              │   │
+│  │     │ Get Task    │───▶│ Mark Doing  │───▶│ Execute     │              │   │
+│  │     │ (todo)      │    │ (doing)     │    │ Implementation│           │   │
+│  │     └─────────────┘    └─────────────┘    └─────────────┘              │   │
+│  │           │                  │                  │                       │   │
+│  │           ▼                  ▼                  ▼                       │   │
+│  │     "What's next?      "I'm working       "Build this                   │   │
+│  │      to do?"          on this"           feature"                     │   │
+│  │                                                                          │   │
+│  │  6. VALIDATE AND ITERATE                                                   │   │
+│  │     ┌─────────────┐    ┌─────────────┐    ┌─────────────┐              │   │
+│  │     │ Mark Review │───▶│ Test        │───▶│ Mark Done   │              │   │
+│  │     │ (review)    │    │ Results     │    │ (done)      │              │   │
+│  │     └─────────────┘    └─────────────┘    └─────────────┘              │   │
+│  │           │                  │                  │                       │   │
+│  │           ▼                  ▼                  ▼                       │   │
+│  │     "Is this right?    "Does it work?    "Complete!"                   │   │
+│  │      Ready to test?"   Pass or fail?"                                 │   │
+│  │                                                                          │   │
+│  │  7. GET NEXT TASK AND REPEAT                                               │   │
+│  │     └──────────────────────────────────────────────────────────────┐    │   │
+│  │                                                                      │    │   │
+│  │     ┌─────────────┐    ┌─────────────┐    ┌─────────────┐         │    │   │
+│  │     │ Find Tasks  │───▶│ Pick Next   │───▶│ Continue    │         │    │   │
+│  │     │ (status:    │    │ todo Task   │    │ Loop        │         │    │   │
+│  │     │  todo)      │    │             │    │             │         │    │   │
+│  │     └─────────────┘    └─────────────┘    └─────────────┘         │    │   │
+│  │                                                                      │    │   │
+│  │     If all tasks done → VALIDATION COMPLETE                          │    │   │
+│  │     If issues found → CREATE IMPROVEMENT TASKS → RESTART LOOP        │    │   │
+│  │                                                                          │   │
+│  │  Output: Completed feature with tested, working code                   │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### How PIV Works with Archon MCP
+
+The PIV Loop is **powered by Archon MCP** for seamless task management:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    PIV LOOP + ARCHON MCP INTEGRATION                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  PURPOSE PHASE                                                                  │
+│  ─────────────                                                                  │
+│  /discovery → Generate ideas                                                   │
+│  /planning {feature} → Create PRD                                              │
+│  /development {feature} → Create TECH SPEC                                     │
+│  manage_project("create", title="Feature Name") → Create project               │
+│                                                                                 │
+│  IMPLEMENTATION PHASE                                                           │
+│  ────────────────────                                                           │
+│  /task-planning {feature} → Create PRP with blueprint                          │
+│  manage_task("create", ...) for each step → Create tasks in Archon             │
+│  Set task_order for priority (0-100, higher = more priority)                   │
+│  Set addBlockedBy for dependencies                                             │
+│                                                                                 │
+│  VALIDATION PHASE (AI Automated Execution)                                      │
+│  ────────────────────────────────────────                                      │
+│                                                                                 │
+│  LOOP (Repeat for each task):                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │                                                                          │   │
+│  │  1. FIND NEXT TASK                                                      │   │
+│  │     find_tasks(filter_by="status", filter_value="todo")                  │   │
+│  │     → Returns: [{id: "t-1", title: "Setup project", ...}]               │   │
+│  │                                                                          │   │
+│  │  2. CHECK DEPENDENCIES                                                   │   │
+│  │     find_tasks(task_id="t-1") → Check blockedBy field                   │   │
+│  │     If blocked → Skip to next unblocked task                            │   │
+│  │                                                                          │   │
+│  │  3. MARK AS IN PROGRESS                                                  │   │
+│  │     manage_task("update", task_id="t-1", status="doing")                │   │
+│  │     → Archon tracks: Only ONE task in "doing" at a time                 │   │
+│  │                                                                          │   │
+│  │  4. LOAD CONTEXT                                                        │   │
+│  │     - Load PRP (contains blueprint)                                     │   │
+│  │     - Load relevant references (SELECTIVE loading!)                      │   │
+│  │     - Load codebase patterns                                           │   │
+│  │     → AI has ONLY what it needs for THIS task                          │   │
+│  │                                                                          │   │
+│  │  5. EXECUTE IMPLEMENTATION                                              │   │
+│  │     - Follow PRP blueprint for this task                                │   │
+│  │     - Write/create code following patterns                              │   │
+│  │     - Apply insights from reference library                             │   │
+│  │                                                                          │   │
+│  │  6. MARK FOR REVIEW                                                     │   │
+│  │     manage_task("update", task_id="t-1", status="review")               │   │
+│  │     → Task awaits validation                                           │   │
+│  │                                                                          │   │
+│  │  7. VALIDATE                                                            │   │
+│  │     - Run tests if applicable                                           │   │
+│  │     - Verify implementation matches requirements                        │   │
+│  │     - Check for edge cases                                             │   │
+│  │                                                                          │   │
+│  │  8. MARK AS COMPLETE                                                    │   │
+│  │     If validation passes:                                               │   │
+│  │       manage_task("update", task_id="t-1", status="done")               │   │
+│  │     → Task complete, unblocks dependent tasks                           │   │
+│  │                                                                          │   │
+│  │  9. GET NEXT TASK                                                       │   │
+│  │     find_tasks(filter_by="status", filter_value="todo")                 │   │
+│  │     → Continue loop until all tasks complete                            │   │
+│  │                                                                          │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                 │
+│  ALL TASKS COMPLETE → VALIDATION PHASE COMPLETE                                 │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### PIV Loop Principles
+
+| Principle | Description | Archon Integration |
+|-----------|-------------|-------------------|
+| **Bit by Bit** | Break work into smallest executable units | Each task = 30min - 4 hours |
+| **Clear Distinction** | Every task has clear boundaries and scope | Task description specifies exact scope |
+| **Actionable Steps** | Tasks are concrete, not abstract | PRP provides implementation blueprint |
+| **One at a Time** | Only one task in progress at any time | `status="doing"` enforced by system |
+| **Dependencies First** | Blocked tasks wait for prerequisites | `addBlockedBy` field tracks dependencies |
+| **Validate Before Moving** | Review each task before marking done | `status="review"` ensures validation |
+
+### Real-World PIV Example
+
+**Building a Python MCP Server for Async Operations**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  PURPOSE PHASE: Idea → Distinction                                              │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  1. GET IDEA: "Build an MCP server that exposes Python async operations"        │
+│     Source: /discovery → Found gap in async tooling                            │
+│                                                                                 │
+│  2. CLEAR DISTINCTION:                                                         │
+│     IN SCOPE:                                                                   │
+│     - MCP server for Python asyncio operations                                  │
+│     - Tool execution with async/await support                                  │
+│     - Basic error handling                                                     │
+│                                                                                 │
+│     OUT OF SCOPE:                                                               │
+│     - Advanced features (streaming, batching)                                  │
+│     - Multi-language support                                                   │
+│     - Production deployment                                                    │
+│                                                                                 │
+│  3. GENERATE ARTIFACTS:                                                         │
+│     /planning python-mcp-server → PRD.md                                       │
+│     /development python-mcp-server → TECH SPEC.md                              │
+│     manage_project("create", title="Python MCP Server")                        │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  IMPLEMENTATION PHASE: Details → Actionable Steps                               │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  4. ADD DETAILS:                                                                │
+│     - Stack: Python 3.11+, asyncio, MCP SDK                                    │
+│     - Architecture: Tool registry, request handler, response formatter         │
+│     - Requirements: Tool name, parameters, async execution                     │
+│                                                                                 │
+│  5. CREATE ACTIONABLE STEPS (Archon Tasks):                                    │
+│     manage_task("create", title="Set up project structure", task_order=10)     │
+│     manage_task("create", title="Implement tool registry", task_order=9)        │
+│     manage_task("create", title="Implement request handler", task_order=8,     │
+│                  addBlockedBy=["t-2"])  # Depends on tool registry            │
+│     manage_task("create", title="Add async execution support", task_order=7,   │
+│                  addBlockedBy=["t-3"])  # Depends on handler                 │
+│     manage_task("create", title="Write unit tests", task_order=6,              │
+│                  addBlockedBy=["t-4"])  # Depends on execution                │
+│     manage_task("create", title="Add error handling", task_order=5,            │
+│                  addBlockedBy=["t-4"])  # Depends on execution                │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  VALIDATION PHASE: AI Automatically Follows Tasks 1 by 1                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  TASK 1: "Set up project structure"                                            │
+│  ─────────────────────────────────────────                                  │
+│  find_tasks(filter_by="status", filter_value="todo")                           │
+│  → Returns: Task 1 (no dependencies)                                           │
+│  manage_task("update", task_id="t-1", status="doing")                          │
+│  → AI executes: Creates pyproject.toml, src/, tests/                           │
+│  manage_task("update", task_id="t-1", status="review")                         │
+│  → Validation: Directory structure exists                                      │
+│  manage_task("update", task_id="t-1", status="done")                           │
+│  → Task complete!                                                              │
+│                                                                                 │
+│  TASK 2: "Implement tool registry"                                             │
+│  ────────────────────────────────────────                                     │
+│  find_tasks(filter_by="status", filter_value="todo")                           │
+│  → Returns: Task 2 (no dependencies)                                           │
+│  manage_task("update", task_id="t-2", status="doing")                          │
+│  → AI executes: Creates ToolRegistry class with register(), get() methods      │
+│  manage_task("update", task_id="t-2", status="review")                         │
+│  → Validation: Can register and retrieve tools                                 │
+│  manage_task("update", task_id="t-2", status="done")                           │
+│  → Task complete! Unblocks Task 3                                              │
+│                                                                                 │
+│  TASK 3: "Implement request handler"                                           │
+│  ────────────────────────────────────────                                     │
+│  find_tasks(filter_by="status", filter_value="todo")                           │
+│  → Returns: Task 3 (was blocked by Task 2, now unblocked!)                     │
+│  manage_task("update", task_id="t-3", status="doing")                          │
+│  → AI executes: Creates RequestHandler with async def handle()                 │
+│  manage_task("update", task_id="t-3", status="review")                         │
+│  → Validation: Handler processes requests correctly                            │
+│  manage_task("update", task_id="t-3", status="done")                           │
+│  → Task complete! Unblocks Task 4 and 5                                        │
+│                                                                                 │
+│  TASK 4: "Add async execution support"                                         │
+│  ────────────────────────────────────────                                     │
+│  find_tasks(filter_by="status", filter_value="todo")                           │
+│  → Returns: Task 4 (was blocked by Task 3, now unblocked!)                     │
+│  manage_task("update", task_id="t-4", status="doing")                          │
+│  → AI executes: Implements asyncio.gather() for concurrent tool execution       │
+│  manage_task("update", task_id="t-4", status="review")                         │
+│  → Validation: Tools execute concurrently                                     │
+│  manage_task("update", task_id="t-4", status="done")                           │
+│  → Task complete! Unblocks Task 5                                               │
+│                                                                                 │
+│  TASK 5: "Write unit tests"                                                    │
+│  ─────────────────────────────────                                        │
+│  find_tasks(filter_by="status", filter_value="todo")                           │
+│  → Returns: Task 5 (now unblocked)                                             │
+│  manage_task("update", task_id="t-5", status="doing")                          │
+│  → AI executes: Creates pytest tests for all components                        │
+│  manage_task("update", task_id="t-5", status="review")                         │
+│  → Validation: All tests pass                                                 │
+│  manage_task("update", task_id="t-5", status="done")                           │
+│  → Task complete!                                                              │
+│                                                                                 │
+│  TASK 6: "Add error handling"                                                  │
+│  ──────────────────────────────────                                          │
+│  find_tasks(filter_by="status", filter_value="todo")                           │
+│  → Returns: Task 6 (now unblocked)                                             │
+│  manage_task("update", task_id="t-6", status="doing")                          │
+│  → AI executes: Adds try/except blocks, error responses                        │
+│  manage_task("update", task_id="t-6", status="review")                         │
+│  → Validation: Errors handled gracefully                                      │
+│  manage_task("update", task_id="t-6", status="done")                           │
+│  → Task complete!                                                              │
+│                                                                                 │
+│  find_tasks(filter_by="status", filter_value="todo")                           │
+│  → Returns: [] (No more tasks!)                                                │
+│                                                                                 │
+│  ✓ VALIDATION PHASE COMPLETE - ALL TASKS DONE                                  │
+│  ✓ Feature fully implemented, tested, and working                              │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Why PIV Works
+
+**Traditional Development**:
+```
+Idea → Long period of confusion → Rushed implementation → Bug fixes
+```
+
+**PIV Loop with Archon**:
+```
+Purpose → Clear scope → Detailed breakdown → Actionable steps
+→ AI executes one by one → Validate each step → Complete feature
+```
+
+**Key Benefits**:
+1. **Clarity**: Every task has clear purpose and scope
+2. **Focus**: AI works on ONE task at a time with focused context
+3. **Traceability**: Archon tracks every task status and dependency
+4. **Quality**: Each task validated before moving forward
+5. **Recoverable**: Can interrupt and resume at any task
+6. **Token Efficient**: Only load context for current task
+
 ## Features
 
 ### Core Workflow Commands
