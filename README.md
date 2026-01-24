@@ -358,7 +358,7 @@ project-root/
 ├── testing/               # Test results
 ├── execution/             # System implementation tasks
 ├── PRD.md                 # Root Product Requirements Document
-├── TECH-SPEC.md           # Root Technical Specification
+├── TECH SPEC.md           # Root Technical Specification
 ├── MVP.md                 # Minimum Viable Product definition
 ├── CLAUDE.md              # Developer guidelines
 ├── INDEX.md               # System navigation index
@@ -426,7 +426,7 @@ project-root/
 └─────────┘    └──────────┘    └─────────┘    └──────────────┘    └──────────┘
      │              │               │                │                │
      ▼              ▼               ▼                ▼                ▼
-  Context       Discovery        PRD           TECH-SPEC        PRP + Refs
+  Context       Discovery        PRD           TECH SPEC       PRP + Refs
  (Export)     (RAG+Web)      (Archon)       (Archon)       (Selective Load)
                                                                                │
                                                                                ▼
@@ -532,7 +532,7 @@ project-root/
 ## Documentation
 
 - **[PRD.md](./PRD.md)** - Complete product requirements
-- **[TECH-SPEC.md](./TECH-SPEC.md)** - Technical specifications and architecture
+- **[TECH SPEC.md](./TECH%20SPEC.md)** - Technical specifications and architecture
 - **[CLAUDE.md](./CLAUDE.md)** - Development guidelines and best practices
 - **[MVP.md](./MVP.md)** - Minimum Viable Product definition
 - **[INDEX.md](./INDEX.md)** - System navigation
@@ -581,7 +581,7 @@ This example demonstrates the complete workflow with MCP integration.
 # System actions:
 # 1. Reads PRD from features/python-mcp-server/prd.md
 # 2. Searches RAG for: "MCP server architecture", "Python async patterns"
-# 3. Generates TECH-SPEC with:
+# 3. Generates TECH SPEC with:
 #    - Architecture diagram
 #    - Technology stack recommendations
 #    - API design
@@ -618,7 +618,7 @@ This example demonstrates the complete workflow with MCP integration.
 /task-planning python-mcp-server
 
 # System actions:
-# 1. Reads PRD and TECH-SPEC
+# 1. Reads PRD and TECH SPEC
 # 2. Searches codebase for similar patterns (Glob, Grep)
 # 3. Loads relevant references from library:
 #    - WHERE category IN ('python', 'mcp')
