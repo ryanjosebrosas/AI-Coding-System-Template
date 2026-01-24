@@ -1,5 +1,23 @@
 # AI Coding System Template
 
+> **Build better software with AI** - A complete framework for AI-assisted development with intelligent task management, token-efficient context loading, and a smart reference library.
+
+## Summary
+
+This system helps you build software features using AI assistants in a structured, efficient way. Instead of chaotic prompts and lost context, you get:
+
+- **15+ Commands** - From discovery (`/discovery`) to deployment (`/workflow`)
+- **PIV Loop Methodology** - Purpose → Implementation → Validation (bit-by-bit execution)
+- **Archon MCP Integration** - Task tracking with `todo` → `doing` → `review` → `done`
+- **Smart Reference Library** - Store what you learn (`/learn`), load only what you need
+- **90% Token Savings** - Selective context loading vs dumping everything
+
+**In a nutshell**: You run `/workflow {feature-name}` and the system guides you through ideation, requirements, technical design, implementation, review, and testing - with AI executing tasks one at a time, tracking progress, and learning from each project.
+
+**Perfect for**: Developers using Claude Code who want a systematic approach to AI-assisted development.
+
+---
+
 A comprehensive markdown-based command system for orchestrating AI-assisted development workflows through MCP (Model Context Protocol) integration. This template provides a complete framework for managing the software development lifecycle from discovery to deployment.
 
 ## Overview
