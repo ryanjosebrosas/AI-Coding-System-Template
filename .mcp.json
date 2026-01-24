@@ -3,6 +3,10 @@
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp?project_ref=oherglzxqtppevlepbbb"
+    },
+    "archon": {
+      "type": "http",
+      "url": "https://mcp-api.ryanjosebrosas.xyz/mcp"
     }
   }
 }
