@@ -26,6 +26,7 @@ Run systematic checks across the codebase:
 - `README.md` - Should exist with project documentation
 - `CLAUDE.md` - Should exist with developer guidelines
 - `INDEX.md` - Should exist in root and subdirectories
+- `PRD.md`, `MVP.md`, `TECH SPEC.md` - **SYSTEM DOCUMENTATION - NEVER DELETE**
 
 **1.2 Check for artifact files:**
 - `nul` - Windows artifact (45 bytes typically)
@@ -233,3 +234,16 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 - Don't modify code files, only documentation and meta-files
 - Run checks before committing to ensure clean state
 - Report issues clearly even if auto-fixed
+
+### File Preservation Rules
+
+**NEVER DELETE (System Documentation)**:
+- `PRD.md`, `MVP.md`, `TECH SPEC.md`, `CLAUDE.md` - Root system docs
+- `README.md`, `INDEX.md`, `LICENSE` - Essential project files
+- `.claude/commands/*.md` - Workflow command definitions
+
+**SAFE TO CLEAN**:
+- `context/prime-*.md` - Old context exports (keep latest 2-3)
+- `nul`, `.DS_Store`, `Thumbs.db` - OS artifacts
+- `*.tmp`, `*.temp` - Temporary files
+- Feature artifacts in `features/{name}/` after project completion

@@ -36,10 +36,24 @@ This is a markdown-based command system for orchestrating AI-assisted developmen
 
 ## Core Documents (Root Level)
 
-- **[MVP.md](./MVP.md)** - Minimum Viable Product definition
-- **[PRD.md](./PRD.md)** - Product Requirements Document
-- **[TECH-SPEC.md](./TECH-SPEC.md)** - Technical Specification
-- **[CLAUDE.md](./CLAUDE.md)** - Developer guidelines
+**These are SYSTEM DOCUMENTATION - they describe the AI Coding System itself and should NEVER be deleted:**
+
+- **[MVP.md](./MVP.md)** - Minimum Viable Product definition for this system
+- **[PRD.md](./PRD.md)** - Product Requirements Document for this system
+- **[TECH SPEC.md](./TECH%20SPEC.md)** - Technical Specification for this system
+- **[CLAUDE.md](./CLAUDE.md)** - Developer guidelines and best practices
+
+> **⚠️ IMPORTANT**: These root-level files document the AI Coding System itself.
+> Feature-specific artifacts go in `features/{feature-name}/` directories.
+
+### File Types Explained
+
+| Location | File Type | Purpose | Cleanup Behavior |
+|----------|-----------|---------|------------------|
+| **Root/** | PRD.md, MVP.md, TECH SPEC.md | System documentation | ❌ NEVER delete |
+| **features/{feature}/** | prd.md, tech-spec.md, prp.md | Feature artifacts | ✅ Delete after completion |
+| **context/** | prime-*.md | Temporary exports | ✅ Delete old exports |
+| **discovery/** | ideas.md | Opportunity research | Keep or archive |
 
 ## Quick Start
 
