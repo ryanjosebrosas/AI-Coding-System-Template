@@ -2,6 +2,22 @@
 
 > **Build better software with AI** - A complete framework for AI-assisted development with intelligent task management, token-efficient context loading, and a smart reference library.
 
+A comprehensive markdown-based command system for orchestrating AI-assisted development workflows through MCP (Model Context Protocol) integration. This template provides a complete framework for managing the software development lifecycle from discovery to deployment.
+
+## Overview
+
+This system manages the complete development lifecycle through intelligent markdown artifacts and **powerful MCP (Model Context Protocol) server integration**. It transforms the way AI assistants work with codebases by providing structured context gathering, automated documentation generation, and task-driven development workflows.
+
+**Key Capabilities:**
+- **Token-efficient context loading** - Only load relevant codebase artifacts AND references
+- **Automated documentation generation** - PRD, Tech Specs, PRPs from AI analysis
+- **Task-driven development** - Archon MCP integration for progress tracking
+- **Smart Reference Library** - Store and retrieve digested coding insights from RAG/web
+- **RAG-powered research** - Search knowledge base and web for best practices
+- **Web MCP integration** - Enhanced discovery and planning with web research
+- **Comprehensive testing** - AI-suggested fixes and coverage reports
+- **Resume capability** - Pick up from any phase after interruptions
+
 ## Summary
 
 This system helps you build software features using AI assistants in a structured, efficient way. Instead of chaotic prompts and lost context, you get:
@@ -15,14 +31,6 @@ This system helps you build software features using AI assistants in a structure
 **In a nutshell**: You run `/workflow {feature-name}` and the system guides you through ideation, requirements, technical design, implementation, review, and testing - with AI executing tasks one at a time, tracking progress, and learning from each project.
 
 **Perfect for**: Developers using Claude Code who want a systematic approach to AI-assisted development.
-
----
-
-A comprehensive markdown-based command system for orchestrating AI-assisted development workflows through MCP (Model Context Protocol) integration. This template provides a complete framework for managing the software development lifecycle from discovery to deployment.
-
-## Overview
-
-This system manages the complete development lifecycle through intelligent markdown artifacts and **powerful MCP (Model Context Protocol) server integration**. It transforms the way AI assistants work with codebases by providing structured context gathering, automated documentation generation, and task-driven development workflows.
 
 **Key Capabilities:**
 - **Token-efficient context loading** - Only load relevant codebase artifacts AND references
