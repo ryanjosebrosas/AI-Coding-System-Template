@@ -39,24 +39,29 @@ Run systematic checks across the codebase:
 - `*.tmp`, `*.temp` - Temporary files
 - Files matching patterns in `.gitignore` that were accidentally committed
 
-**1.3 Check documentation consistency:**
+**1.4 Check for old context exports:**
+- `context/prime-*.md` files - Count how many exist
+- If more than 3, flag old files for cleanup
+- Prime files are large (10,000+ tokens) - cleanup saves space
+
+**1.5 Check documentation consistency:**
 - Root `INDEX.md` - Should list all commands
 - `features/INDEX.md` - Should reflect current feature statuses
 - `context/INDEX.md` - Should list all prime exports
 - `discovery/INDEX.md` - Should list all discovery documents
 - `execution/INDEX.md` - Should list all execution tasks
 
-**1.4 Check for outdated status references:**
+**1.6 Check for outdated status references:**
 - Feature STATUS.md files - Should match actual completion state
 - Compare features/INDEX.md status with feature/STATUS.md
 - Check for "Ready for X" phases that are actually complete
 
-**1.5 Check command file integrity:**
+**1.7 Check command file integrity:**
 - All commands in `.claude/commands/` should have proper YAML frontmatter
 - All commands listed in INDEX.md should exist
 - No orphaned or missing command files
 
-**1.6 Check template files:**
+**1.8 Check template files:**
 - PRP templates should exist in `templates/prp/`
 - STATUS.md template should exist in `.claude/templates/`
 
@@ -78,6 +83,7 @@ Apply fixes for common issues:
 ```bash
 # Remove nul, .DS_Store, Thumbs.db, *.tmp, *.temp
 # Remove PRD.md, MVP.md, TECH SPEC.md if project is complete
+# Remove old context/prime-*.md files (keep latest 2-3)
 ```
 
 **2.4 Update outdated INDEX.md entries:**
@@ -192,6 +198,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 | Pattern | Description | Action |
 |---------|-------------|--------|
+| `context/prime-*.md` | Context export files (large!) | Keep latest 2-3, delete rest |
 | `nul` | Windows artifact (45 bytes) | Delete |
 | `.DS_Store` | macOS artifact | Delete |
 | `Thumbs.db` | Windows thumbnail cache | Delete |
@@ -265,3 +272,18 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 - Is the project/feature marked as complete in STATUS.md?
 - Are there any active tasks in Archon?
 - Has the code been reviewed and tested?
+
+**Context/Prime Files Cleanup:**
+```bash
+# List all prime files sorted by date (oldest first)
+ls -lt context/prime-*.md | tail -n +4 | xargs rm -f
+
+# This keeps the latest 3 prime files, removes older ones
+# Prime files are large context exports - cleanup saves space
+```
+
+**Context cleanup logic:**
+- Keep latest 2-3 prime exports (most recent context)
+- Delete older prime-*.md files to save repository space
+- Prime files can be 10,000+ tokens each - cleanup is important
+- Always keep at least 1-2 recent exports for reference
