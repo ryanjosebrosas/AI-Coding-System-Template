@@ -290,40 +290,148 @@ This command provides transparency into AI-assisted development value and helps 
 
 **Note on Empty Results**: If usage metrics table is empty (not tracking yet), all values will be 0. This is expected and the dashboard should handle it gracefully.
 
-### Step 5: Calculate Time Savings
+### Step 5: Calculate Metrics
 
-**Objective**: Estimate time saved from AI assistance.
-
-**Actions**:
-1. For each completed task:
-   - Get task duration: `updated_at - created_at`
-   - Estimate manual effort: `task.duration_estimate` or use default (2 hours)
-   - Calculate savings: `manual_effort - actual_duration`
-2. Aggregate time savings:
-   - Total hours saved
-   - Average savings per task
-   - Hours saved this week
-   - Hours saved this month
-
-**Expected Result**: Time savings metrics.
-
-### Step 6: Calculate Productivity Metrics
-
-**Objective**: Compute productivity indicators.
+**Objective**: Calculate token usage, time savings, and completion rate metrics from collected data.
 
 **Actions**:
-1. Calculate completion rate:
-   - `completion_rate = (done_tasks / total_tasks) * 100`
-2. Calculate average task duration:
-   - Average of `updated_at - created_at` for done tasks
-3. Calculate tasks per week:
-   - Count done tasks created in last 7 days
-4. Calculate active projects:
-   - Count projects with tasks in todo/doing status
 
-**Expected Result**: Productivity metrics object.
+1. **Calculate token usage metrics**:
+   - From usage metrics (Step 4), extract token_usage data:
+     - `total_tokens_7_days`: Sum of token_usage values in last 7 days
+     - `total_tokens_30_days`: Sum of token_usage values in last 30 days
+     - `average_tokens_per_command`: `total_tokens_30_days / command_executions.total_30_days` (if commands > 0)
+     - `token_breakdown`: Extract by_command breakdown if available
+   - If usage metrics table is empty:
+     - Set all token metrics to 0 with note "Token tracking not enabled yet"
+   - Calculate percentage change:
+     - Compare 7-day total to previous 7-day period (days 8-14)
+     - Calculate: `((current_period - previous_period) / previous_period) * 100`
+     - Handle division by zero: if previous period is 0, change is "N/A"
 
-### Step 7: Display Dashboard
+2. **Calculate time savings**:
+   - For each completed task from Step 1:
+     - Extract `duration_hours` from task data (calculated as `updated_at - created_at`)
+     - Estimate manual effort:
+       - Check if task has `duration_estimate` field
+       - If not, use default: 2 hours (adjustable constant)
+       - Alternative: Use median duration of completed tasks × 1.5 (manual work is slower)
+     - Calculate per-task savings: `manual_effort_estimate - actual_duration_hours`
+     - Handle edge cases:
+       - If duration is negative (data error): Set savings to 0
+       - If savings is negative (task took longer than estimate): Set to 0 (no penalty)
+       - If duration is missing: Skip task in calculation
+   - Aggregate time savings:
+     - `total_hours_saved`: Sum of all per-task savings
+     - `average_savings_per_task`: `total_hours_saved / done_count` (if done_count > 0)
+     - `hours_saved_7_days`: Sum for tasks where `updated_at >= NOW() - INTERVAL '7 days'`
+     - `hours_saved_30_days`: Sum for tasks where `updated_at >= NOW() - INTERVAL '30 days'`
+   - Calculate efficiency rate:
+     - `efficiency_rate = (total_manual_effort_estimate - total_actual_time) / total_manual_effort_estimate * 100`
+     - This represents what percentage of time was saved
+
+3. **Calculate completion rates**:
+   - From task statistics (Step 1):
+     - `overall_completion_rate = (done_count / total_tasks) * 100` (if total_tasks > 0)
+     - `in_progress_rate = (doing_count / total_tasks) * 100`
+     - `pending_rate = (todo_count / total_tasks) * 100`
+     - `review_rate = (review_count / total_tasks) * 100`
+   - Calculate project completion rates:
+     - For each project from Step 2:
+       - `project_completion_rate = (project.done_count / project.task_count) * 100`
+     - Average project completion: `sum(project_completion_rates) / total_projects`
+   - Calculate velocity metrics:
+     - `tasks_completed_7_days`: Count done tasks where `updated_at >= NOW() - INTERVAL '7 days'`
+     - `tasks_completed_30_days`: Count done tasks where `updated_at >= NOW() - INTERVAL '30 days'`
+     - `completion_velocity_7_days`: `tasks_completed_7_days / 7` (tasks per day)
+     - `completion_velocity_30_days`: `tasks_completed_30_days / 30` (tasks per day)
+
+4. **Calculate productivity metrics**:
+   - Average task duration:
+     - Sum all done task durations (calculated in Step 1)
+     - `average_duration_hours = total_duration / done_count` (if done_count > 0)
+   - Task throughput:
+     - `tasks_per_week = tasks_completed_7_days`
+     - `tasks_per_month = tasks_completed_30_days`
+   - Project activity:
+     - `active_projects`: From Step 2, count of projects with status "active"
+     - `project_completion_rate = (completed_projects / total_projects) * 100`
+   - Time efficiency:
+     - From time savings calculation, use `efficiency_rate`
+     - Interpret as: "X% of potential manual time saved through AI assistance"
+
+5. **Handle calculation errors**:
+   - If task duration data is missing: Use default 0, log warning, continue with other metrics
+   - If division by zero occurs: Set result to 0 or "N/A", log error
+   - If timestamps are invalid: Skip affected task, log warning
+   - If savings calculation produces negative values: Clamp to 0, log warning
+   - If any required field is null: Use sensible default, continue calculation
+
+**Expected Result**: Comprehensive metrics object with structure:
+```json
+{
+  "token_usage": {
+    "total_7_days": 150000,
+    "total_30_days": 650000,
+    "average_per_command": 9559,
+    "breakdown": {
+      "/planning": 200000,
+      "/development": 250000,
+      "/execution": 200000
+    },
+    "percentage_change": 12.5,
+    "tracking_enabled": true
+  },
+  "time_savings": {
+    "total_hours_saved": 94.5,
+    "average_savings_per_task": 2.01,
+    "hours_saved_7_days": 18.5,
+    "hours_saved_30_days": 72.0,
+    "efficiency_rate": 67,
+    "calculation_method": "default_2hr_estimate",
+    "tasks_analyzed": 47
+  },
+  "completion_rates": {
+    "overall_completion_rate": 85.5,
+    "in_progress_rate": 3.6,
+    "pending_rate": 1.8,
+    "review_rate": 9.1,
+    "average_project_completion": 75.0,
+    "project_breakdown": [
+      {
+        "project_id": "proj-123",
+        "project_title": "Feature Implementation",
+        "completion_rate": 80.0,
+        "done_tasks": 20,
+        "total_tasks": 25
+      }
+    ]
+  },
+  "velocity": {
+    "tasks_completed_7_days": 12,
+    "tasks_completed_30_days": 47,
+    "daily_completion_rate_7_days": 1.71,
+    "daily_completion_rate_30_days": 1.57
+  },
+  "productivity": {
+    "average_task_duration_hours": 0.95,
+    "tasks_per_week": 12,
+    "tasks_per_month": 47,
+    "active_projects": 3,
+    "project_completion_rate": 20.0,
+    "time_efficiency_percent": 67
+  }
+}
+```
+
+**Edge Cases to Handle**:
+- No completed tasks yet: Set all rate-based metrics to 0, display "No data" message
+- Empty usage metrics table: Set token metrics to 0 with note "Tracking not enabled"
+- Task durations not available: Use estimate only, flag as "Estimated"
+- Division by zero in rate calculations: Set to 0, log warning
+- Negative savings (tasks took longer than expected): Clamp to 0, don't penalize
+
+### Step 6: Display Dashboard
 
 **Objective**: Present formatted analytics dashboard to user.
 
@@ -341,7 +449,7 @@ This command provides transparency into AI-assisted development value and helps 
 
 **Expected Result**: Comprehensive analytics dashboard displayed.
 
-### Step 8: Export Data (Optional)
+### Step 7: Export Data (Optional)
 
 **Objective**: Generate CSV and JSON exports for further analysis.
 
