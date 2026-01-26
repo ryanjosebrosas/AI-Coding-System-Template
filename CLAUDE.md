@@ -322,6 +322,68 @@ The Smart Reference Library stores digested coding insights in Supabase (`archon
 /learn react hooks
 ```
 
+## Usage Analytics Dashboard
+
+The Usage Analytics Dashboard provides transparency into AI-assisted development value by tracking productivity metrics, token usage, time savings, and feature adoption.
+
+### Available Commands:
+
+- `/analytics` - Display usage analytics dashboard with productivity metrics
+- `/analytics --export` - Generate CSV/JSON exports of analytics data
+
+### What It Tracks:
+
+- **Task Completion**: Status breakdown, completion rates, recent completions
+- **Time Savings**: Total hours saved, efficiency rate, per-task averages
+- **Token Usage**: Total tokens consumed, per-command breakdown (if tracking enabled)
+- **Feature Usage**: Reference library statistics, command execution counts
+- **Productivity Metrics**: Average task duration, velocity, project activity
+- **Insights**: Actionable recommendations based on your data
+
+### How It Works:
+
+1. **Queries Archon MCP** for tasks and projects (completion rates, velocity)
+2. **Queries Supabase** for reference library stats and usage metrics
+3. **Calculates metrics** (time savings, efficiency rates, trends)
+4. **Displays dashboard** with formatted markdown tables and insights
+5. **Exports data** (optional) to CSV/JSON for further analysis
+
+**Data Sources**:
+- Archon MCP tasks (completion status, duration)
+- Archon MCP projects (activity, completion rates)
+- Supabase `archon_references` (library health)
+- Supabase `archon_usage_metrics` (token tracking, if enabled)
+
+### Usage Examples:
+
+```bash
+# View analytics dashboard
+/analytics
+
+# Export analytics data to CSV and JSON
+/analytics --export
+```
+
+### Prerequisites:
+
+- Archon MCP server available
+- Supabase `archon_usage_metrics` table exists (Migration 013)
+- Supabase `archon_references` table exists (Migration 012)
+
+### Export Files:
+
+When using `--export` flag, two files are generated in `features/usage-analytics-dashboard/exports/`:
+- `analytics-{YYYY-MM-DD}.csv` - Spreadsheet-compatible format
+- `analytics-{YYYY-MM-DD}.json` - Complete analytics data structure
+
+### Notes:
+
+- **Passive tracking**: No manual tracking needed - queries existing data sources
+- **Token tracking**: Not in MVP - future enhancement will add per-command token tracking
+- **Time estimates**: Uses default 2-hour manual effort estimate (adjustable)
+- **Privacy**: All data stays local - no external analytics or telemetry
+- **Performance**: Queries optimized to complete in < 2 seconds
+
 ## PRP Template Usage
 
 **During Task Execution, always reference PRP documents:**
