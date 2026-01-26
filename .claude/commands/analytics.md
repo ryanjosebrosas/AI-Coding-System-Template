@@ -140,47 +140,155 @@ This command provides transparency into AI-assisted development value and helps 
 
 ### Step 3: Query Supabase References
 
-**Objective**: Get reference library statistics.
+**Objective**: Get reference library statistics from database.
 
 **Actions**:
-1. Execute SQL query:
-   ```sql
-   SELECT
-     category,
-     COUNT(*) as count,
-     MAX(updated_at) as last_updated
-   FROM archon_references
-   GROUP BY category
-   ORDER BY category;
-   ```
-2. Execute total count query:
-   ```sql
-   SELECT COUNT(*) as total FROM archon_references;
-   ```
 
-**Expected Result**: Reference library statistics.
+1. **Verify Supabase connection**:
+   - Check Supabase credentials are available
+   - Test connection with simple query if needed
+   - If unavailable, display warning and skip to Step 5 (dashboard with partial data)
+
+2. **Query category statistics**:
+   - Execute SQL query (direct Supabase access):
+     ```sql
+     SELECT
+       category,
+       COUNT(*) as count,
+       MAX(updated_at) as last_updated
+     FROM archon_references
+     GROUP BY category
+     ORDER BY category;
+     ```
+   - Parse results into category stats map: `reference_stats[category] = {count, last_updated}`
+
+3. **Query total reference count**:
+   - Execute SQL query:
+     ```sql
+     SELECT COUNT(*) as total FROM archon_references;
+     ```
+   - Extract total count from result
+
+4. **Calculate library health** (optional enhancement):
+   - Define standard categories: `python`, `mcp`, `react`, `typescript`, `ai-agents`, `testing`, `patterns`, `supabase`, `api`
+   - Count non-empty categories from stats
+   - Calculate health: `(non_empty_categories / total_categories) * 100`
+
+5. **Handle query errors**:
+   - If SQL query fails with "relation does not exist": Log error that Migration 012 hasn't been run, set reference stats to empty, continue to Step 4
+   - If connection error: Log error message, set reference stats to empty, continue to Step 4
+   - If query timeout: Retry once with increased timeout, then proceed with empty stats
+   - If results are null/empty: Set total count to 0, continue to Step 4
+
+**Expected Result**: Reference library statistics object with structure:
+```json
+{
+  "total_references": 17,
+  "categories": {
+    "ai-agents": {"count": 3, "last_updated": "2026-01-24T10:30:00Z"},
+    "mcp": {"count": 5, "last_updated": "2026-01-24T09:15:00Z"},
+    "patterns": {"count": 2, "last_updated": "2026-01-23T14:20:00Z"},
+    "python": {"count": 4, "last_updated": "2026-01-22T16:45:00Z"},
+    "react": {"count": 0, "last_updated": null},
+    "supabase": {"count": 1, "last_updated": "2026-01-21T11:00:00Z"},
+    "testing": {"count": 2, "last_updated": "2026-01-20T13:30:00Z"},
+    "typescript": {"count": 0, "last_updated": null},
+    "api": {"count": 0, "last_updated": null}
+  },
+  "health_percentage": 67,
+  "non_empty_categories": 6
+}
+```
 
 ### Step 4: Query Usage Metrics
 
 **Objective**: Get usage metrics from Supabase (if table populated).
 
 **Actions**:
-1. Execute SQL query:
-   ```sql
-   SELECT
-     metric_type,
-     metric_value,
-     recorded_at
-   FROM archon_usage_metrics
-   WHERE recorded_at >= NOW() - INTERVAL '30 days'
-   ORDER BY recorded_at DESC;
-   ```
-2. Aggregate metrics by type:
-   - Token usage (if available)
-   - Command executions
-   - Time tracked
 
-**Expected Result**: Usage metrics aggregated by type.
+1. **Verify table exists**:
+   - Check if `archon_usage_metrics` table exists (Migration 013)
+   - If table doesn't exist, log warning and continue to Step 5 (usage metrics will be empty)
+
+2. **Query recent metrics**:
+   - Execute SQL query (direct Supabase access):
+     ```sql
+     SELECT
+       metric_type,
+       metric_value,
+       recorded_at
+     FROM archon_usage_metrics
+     WHERE recorded_at >= NOW() - INTERVAL '30 days'
+     ORDER BY recorded_at DESC;
+     ```
+
+3. **Parse and aggregate metrics**:
+   - Group results by `metric_type` into map: `metrics_by_type[metric_type] = [{metric_value, recorded_at}, ...]`
+   - For each metric type, calculate:
+     - Sum of values (for cumulative metrics like token usage)
+     - Count of records (for frequency metrics like command executions)
+     - Most recent value and timestamp
+   - Handle different metric types:
+     - `token_usage`: Sum total tokens, extract per-command breakdown if available
+     - `command_execution`: Count executions by command name
+     - `time_tracked`: Sum total hours tracked
+     - `task_created`: Count tasks created in period
+     - `task_completed`: Count tasks completed in period
+
+4. **Calculate time-based aggregations**:
+   - **Last 7 days**: Filter metrics where `recorded_at >= NOW() - INTERVAL '7 days'`
+   - **Last 30 days**: Use full result set from Step 4.2
+   - For each period, calculate aggregates per metric type
+
+5. **Handle query errors**:
+   - If SQL query fails with "relation does not exist": Log warning that Migration 013 hasn't been run, set usage metrics to empty, continue to Step 5
+   - If connection error: Log error message, set usage metrics to empty, continue to Step 5
+   - If query returns empty: Set all metric aggregates to 0, continue to Step 5 (this is expected if not tracking usage yet)
+   - If metric_type is unknown: Log warning, include in results anyway for flexibility
+
+**Expected Result**: Usage metrics object with structure:
+```json
+{
+  "token_usage": {
+    "total_7_days": 150000,
+    "total_30_days": 650000,
+    "by_command": {
+      "/planning": 200000,
+      "/development": 250000,
+      "/execution": 200000
+    },
+    "last_recorded": "2026-01-26T12:00:00Z"
+  },
+  "command_executions": {
+    "total_7_days": 15,
+    "total_30_days": 68,
+    "by_command": {
+      "/analytics": 3,
+      "/learn": 8,
+      "/learn-health": 12,
+      "/planning": 5,
+      "/development": 4,
+      "/execution": 6
+    },
+    "last_recorded": "2026-01-26T11:30:00Z"
+  },
+  "time_tracked": {
+    "total_hours_7_days": 25,
+    "total_hours_30_days": 98,
+    "last_recorded": "2026-01-26T12:00:00Z"
+  },
+  "tasks_created": {
+    "count_7_days": 8,
+    "count_30_days": 32
+  },
+  "tasks_completed": {
+    "count_7_days": 12,
+    "count_30_days": 47
+  }
+}
+```
+
+**Note on Empty Results**: If usage metrics table is empty (not tracking yet), all values will be 0. This is expected and the dashboard should handle it gracefully.
 
 ### Step 5: Calculate Time Savings
 
