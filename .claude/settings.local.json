@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git clone:*)",
+      "Bash(tree:*)",
+      "Bash(claude mcp add:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(chmod:*)",
+      "WebSearch",
+      "mcp__archon__health_check",
+      "mcp__archon__find_tasks",
+      "mcp__archon__find_projects",
+      "mcp__archon__manage_project",
+      "mcp__archon__manage_task",
+      "Bash(dir:*)",
+      "Bash(echo:*)",
+      "Bash(find:*)",
+      "Bash(findstr /v /i \"node_modules .git .venv __pycache__ .pytest_cache\")",
+      "Bash(powershell:*)",
+      "Bash(del:*)",
+      "mcp__archon__rag_search_knowledge_base",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nImplement Smart Reference Library with /learn and /learn-health commands\n\n- Add /learn command: Search RAG/web, digest insights, store to archon_references\n- Add /learn-health command: Check library health and category statistics\n- Add /workflow command: Unified workflow execution with resume support\n- Add /update-index and /update-status utility commands\n- Create PRP templates \\(base, AI agent, MCP integration, API endpoint, frontend\\)\n- Implement Smart Reference Library feature with token-efficient selective loading\n- Update PRP base template with Reference Library section for selective loading\n- Update CLAUDE.md with Reference Library documentation\n- Add root documentation: INDEX.md, MVP.md, PRD.md, TECH-SPEC.md, README.md\n- Add context exports \\(3 prime snapshots\\) and discovery documents\n- Add execution task breakdown \\(28 tasks\\) and feature tracking\n\nArchon Project ID: acf45b67-51aa-475d-b4cc-7c1055b4a032\nAll 7 tasks completed successfully.\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(gh:*)",
+      "Bash(git commit:*)",
+      "mcp__web-reader__webReader",
+      "mcp__web-search-prime__webSearchPrime",
+      "mcp__archon__rag_get_available_sources",
+      "Bash(findstr:*)",
+      "mcp__supabase__execute_sql",
+      "Bash(git mv:*)",
+      "Bash(git rm:*)",
+      "Bash(git remote set-url:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
+}

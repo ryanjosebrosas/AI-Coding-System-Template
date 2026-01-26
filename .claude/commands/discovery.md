@@ -168,6 +168,10 @@ Compile all findings into discovery document:
 
 4. **Save document**:
    - Save to `discovery/discovery-{timestamp}.md`
+   - Update `discovery/INDEX.md` with new entry:
+     - Link to discovery document
+     - Timestamp
+     - Summary of ideas and opportunities
 
 **Expected Result**: Discovery document created with all findings.
 
