@@ -665,24 +665,224 @@ Generated: 2026-01-26T12:00:00Z
 
 ### Step 7: Export Data (Optional)
 
-**Objective**: Generate CSV and JSON exports for further analysis.
+**Objective**: Generate CSV and JSON exports of analytics data for further analysis or reporting.
 
 **Actions**:
-1. If export requested, create export directory:
-   ```bash
-   mkdir -p features/usage-analytics-dashboard/exports/
-   ```
-2. Generate CSV file:
-   - Filename: `analytics-{YYYY-MM-DD}.csv`
-   - Format: Comma-separated values with headers
-   - Content: All metrics and raw data
-3. Generate JSON file:
-   - Filename: `analytics-{YYYY-MM-DD}.json`
-   - Format: JSON object with all metrics
-   - Content: Structured data for programmatic access
-4. Display export confirmation with file paths
 
-**Expected Result**: Export files created and paths displayed.
+1. **Check export flag**:
+   - Determine if export was requested (via `--export` flag or user prompt)
+   - If not requested, skip this step and proceed to command completion
+   - If requested, continue to export directory creation
+
+2. **Create export directory**:
+   - Define export path: `features/usage-analytics-dashboard/exports/`
+   - Execute directory creation:
+     ```bash
+     mkdir -p features/usage-analytics-dashboard/exports/
+     ```
+   - Handle errors:
+     - If directory already exists: Continue (no error)
+     - If permission denied: Log error, display message to user, skip export
+     - If disk space insufficient: Log error, display message to user, skip export
+     - If path is invalid: Log error, display message to user, skip export
+
+3. **Generate CSV export**:
+   - Define filename: `analytics-{YYYY-MM-DD}.csv` (using current date)
+   - Construct CSV content with headers and data rows:
+     - **Header row**: `metric_type,metric_name,metric_value,timestamp`
+     - **Task metrics rows**:
+       - `task,total_tasks,{total_tasks},{current_timestamp}`
+       - `task,done_count,{done_count},{current_timestamp}`
+       - `task,review_count,{review_count},{current_timestamp}`
+       - `task,doing_count,{doing_count},{current_timestamp}`
+       - `task,todo_count,{todo_count},{current_timestamp}`
+     - **Project metrics rows**:
+       - `project,total_projects,{total_projects},{current_timestamp}`
+       - `project,active_projects,{active_projects},{current_timestamp}`
+       - `project,completed_projects,{completed_projects},{current_timestamp}`
+     - **Time savings rows**:
+       - `savings,total_hours_saved,{total_hours_saved},{current_timestamp}`
+       - `savings,average_savings_per_task,{average_savings_per_task},{current_timestamp}`
+       - `savings,hours_saved_7_days,{hours_saved_7_days},{current_timestamp}`
+       - `savings,hours_saved_30_days,{hours_saved_30_days},{current_timestamp}`
+       - `savings,efficiency_rate,{efficiency_rate},{current_timestamp}`
+     - **Token usage rows** (if tracking enabled):
+       - `tokens,total_7_days,{total_tokens_7_days},{current_timestamp}`
+       - `tokens,total_30_days,{total_tokens_30_days},{current_timestamp}`
+       - `tokens,average_per_command,{average_tokens_per_command},{current_timestamp}`
+     - **Velocity rows**:
+       - `velocity,tasks_completed_7_days,{tasks_completed_7_days},{current_timestamp}`
+       - `velocity,tasks_completed_30_days,{tasks_completed_30_days},{current_timestamp}`
+       - `velocity,daily_rate_7_days,{completion_velocity_7_days},{current_timestamp}`
+     - **Reference library rows**:
+       - `references,total_references,{total_references},{current_timestamp}`
+       - `references,health_percentage,{health_percentage},{current_timestamp}`
+       - For each category: `references,category_{category},{count},{current_timestamp}`
+   - Write CSV file:
+     - Use proper CSV formatting (comma-separated, newline-delimited)
+     - Ensure headers match row structure
+     - Handle special characters (escape commas in values)
+   - Handle errors:
+     - If write fails: Log error, display message, continue to JSON export
+     - If file exists: Overwrite with new data
+     - If data contains invalid characters: Sanitize or escape, log warning
+
+4. **Generate JSON export**:
+   - Define filename: `analytics-{YYYY-MM-DD}.json` (using current date)
+   - Construct JSON object with complete analytics data:
+     ```json
+     {
+       "export_timestamp": "{ISO_8601_timestamp}",
+       "export_date": "{YYYY-MM-DD}",
+       "metrics": {
+         "tasks": {
+           "total_tasks": {total_tasks},
+           "done_count": {done_count},
+           "review_count": {review_count},
+           "doing_count": {doing_count},
+           "todo_count": {todo_count},
+           "overall_completion_rate": {overall_completion_rate}
+         },
+         "projects": {
+           "total_projects": {total_projects},
+           "active_projects": {active_projects},
+           "completed_projects": {completed_projects},
+           "archived_projects": {archived_projects}
+         },
+         "time_savings": {
+           "total_hours_saved": {total_hours_saved},
+           "average_savings_per_task": {average_savings_per_task},
+           "hours_saved_7_days": {hours_saved_7_days},
+           "hours_saved_30_days": {hours_saved_30_days},
+           "efficiency_rate": {efficiency_rate},
+           "tasks_analyzed": {tasks_analyzed}
+         },
+         "velocity": {
+           "tasks_completed_7_days": {tasks_completed_7_days},
+           "tasks_completed_30_days": {tasks_completed_30_days},
+           "daily_completion_rate_7_days": {completion_velocity_7_days},
+           "daily_completion_rate_30_days": {completion_velocity_30_days}
+         },
+         "productivity": {
+           "average_task_duration_hours": {average_task_duration_hours},
+           "tasks_per_week": {tasks_completed_7_days},
+           "tasks_per_month": {tasks_completed_30_days},
+           "active_projects": {active_projects},
+           "project_completion_rate": {project_completion_rate},
+           "time_efficiency_percent": {efficiency_rate}
+         },
+         "token_usage": {
+           "total_7_days": {total_tokens_7_days},
+           "total_30_days": {total_tokens_30_days},
+           "average_per_command": {average_tokens_per_command},
+           "breakdown_by_command": {
+             "/planning": {tokens_planning},
+             "/development": {tokens_development},
+             "/execution": {tokens_execution}
+           },
+           "tracking_enabled": {tracking_enabled}
+         },
+         "references": {
+           "total_references": {total_references},
+           "health_percentage": {health_percentage},
+           "non_empty_categories": {non_empty_categories},
+           "categories": {
+             "ai-agents": {"count": {count}, "last_updated": "{timestamp}"},
+             "mcp": {"count": {count}, "last_updated": "{timestamp}"},
+             "patterns": {"count": {count}, "last_updated": "{timestamp}"},
+             "python": {"count": {count}, "last_updated": "{timestamp}"},
+             "react": {"count": {count}, "last_updated": "{timestamp}"},
+             "supabase": {"count": {count}, "last_updated": "{timestamp}"},
+             "testing": {"count": {count}, "last_updated": "{timestamp}"},
+             "typescript": {"count": {count}, "last_updated": "{timestamp}"},
+             "api": {"count": {count}, "last_updated": "{timestamp}"}
+           }
+         },
+         "recent_completions": [
+           {
+             "task_id": "{task_id}",
+             "title": "{task_title}",
+             "project_id": "{project_id}",
+             "completed_at": "{timestamp}",
+             "duration_hours": {duration}
+           }
+         ]
+       }
+     }
+     ```
+   - Write JSON file with proper formatting:
+     - Use pretty-print (2-space indentation)
+     - Ensure valid JSON syntax
+     - Include all null/empty values (use null, not empty strings)
+   - Handle errors:
+     - If write fails: Log error, display message, continue to confirmation
+     - If file exists: Overwrite with new data
+     - If JSON serialization fails: Log error with field name, use partial data if possible
+
+5. **Verify export files**:
+   - Check that both files were created successfully:
+     - Verify CSV file exists and is non-empty
+     - Verify JSON file exists and is valid JSON (if feasible)
+   - Calculate file sizes for reporting:
+     - Get CSV file size in bytes
+     - Get JSON file size in bytes
+     - Convert to human-readable format (KB, MB if needed)
+   - If either file creation failed:
+     - Log which file failed
+     - Display partial success message
+     - Include error reason
+
+6. **Display export confirmation**:
+   - Create formatted message:
+     ```markdown
+     ## Export Complete
+
+     **Files Created**:
+     - CSV: `{csv_file_path}` ({file_size})
+     - JSON: `{json_file_path}` ({file_size})
+
+     **Export Date**: {YYYY-MM-DD}
+     **Total Metrics**: {count_of_metrics_exported}
+
+     Use these files for further analysis or reporting.
+     ```
+   - Include file paths in message for easy access
+   - Add timestamp of export
+   - If only one format succeeded, note the partial success
+   - If both failed, display error message with troubleshooting steps
+
+**Expected Result**: Export files created successfully and confirmation message displayed to user.
+
+**CSV File Example**:
+```csv
+metric_type,metric_name,metric_value,timestamp
+task,total_tasks,55,2026-01-26T12:00:00Z
+task,done_count,47,2026-01-26T12:00:00Z
+task,review_count,5,2026-01-26T12:00:00Z
+task,doing_count,2,2026-01-26T12:00:00Z
+task,todo_count,1,2026-01-26T12:00:00Z
+savings,total_hours_saved,94.5,2026-01-26T12:00:00Z
+savings,efficiency_rate,67,2026-01-26T12:00:00Z
+velocity,tasks_completed_7_days,12,2026-01-26T12:00:00Z
+references,total_references,17,2026-01-26T12:00:00Z
+references,health_percentage,67,2026-01-26T12:00:00Z
+```
+
+**JSON File Structure** (complete example shown in Actions above)
+
+**Confirmation Message Example**:
+```markdown
+## Export Complete
+
+**Files Created**:
+- CSV: `features/usage-analytics-dashboard/exports/analytics-2026-01-26.csv` (2.4 KB)
+- JSON: `features/usage-analytics-dashboard/exports/analytics-2026-01-26.json` (4.8 KB)
+
+**Export Date**: 2026-01-26
+**Total Metrics**: 25
+
+Use these files for further analysis or reporting.
+```
 
 ## Output Format
 
