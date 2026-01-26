@@ -436,18 +436,232 @@ This command provides transparency into AI-assisted development value and helps 
 **Objective**: Present formatted analytics dashboard to user.
 
 **Actions**:
-1. Format output as markdown with sections:
-   - Overview (key metrics)
-   - Task Completion
-   - Time Savings
-   - Feature Usage
-   - Productivity Metrics
-   - Recent Activity
-2. Use markdown tables for data presentation
-3. Add visual indicators (progress bars, trend arrows)
-4. Include insights and recommendations
 
-**Expected Result**: Comprehensive analytics dashboard displayed.
+1. **Calculate trend indicators**:
+   - For each metric in Overview, calculate trend:
+     - Compare current 7-day value to previous 7-day period (days 8-14)
+     - Calculate percentage change: `((current - previous) / previous) * 100`
+     - Map to arrow indicator:
+       - `> 10%`: "↑↑" (strong increase)
+       - `> 0%`: "↑" (moderate increase)
+       - `= 0%`: "→" (no change)
+       - `< 0%`: "↓" (decrease)
+     - Format trend string: "{arrow} {abs(percentage)}%"
+   - Handle edge cases:
+     - If previous period is 0: Use "→" (no baseline)
+     - If no data available: Use "-" (not applicable)
+
+2. **Generate insights**:
+   - **What's Working** (identify strengths):
+     - If completion rate > 80%: "Strong task completion rate"
+     - If efficiency rate > 60%: "Excellent time efficiency"
+     - If velocity > 1.5 tasks/day: "High delivery velocity"
+     - If active projects < 5: "Focused project portfolio"
+     - If library health > 70%: "Well-rounded knowledge base"
+   - **Opportunities** (identify gaps):
+     - If todo_count > doing_count * 2: "Consider breaking down large tasks"
+     - If review_count > 5: "Review backlog building - consider code review practices"
+     - If any category empty: "Learn {category} patterns with `/learn {category}`"
+     - If efficiency rate < 50%: "Review task estimates, consider breaking down work"
+     - If velocity < 1 task/day: "Consider reducing work-in-progress (WIP)"
+   - **Improvement Tips** (actionable recommendations):
+     - If doing_count > 3: "Limit WIP to 2-3 tasks for better focus"
+     - If average_task_duration_hours > 2: "Break large tasks into smaller subtasks"
+     - If project_completion_rate < 70%: "Close out completed projects to maintain momentum"
+     - If no time savings: "Track task estimates to measure efficiency gains"
+
+3. **Format Overview section**:
+   - Create header: `## Overview`
+   - Create table with columns: `| Metric | Value | Change |`
+   - Add rows for each key metric:
+     - Tasks Completed: `{done_count}` | `{trend_indicator}`
+     - Time Saved: `{total_hours_saved}h` | `{trend_indicator}`
+     - Completion Rate: `{overall_completion_rate}%` | `{trend_indicator}`
+     - Active Projects: `{active_projects}` | `{trend_indicator}`
+   - Add timestamp: `Generated: {current_timestamp}`
+
+4. **Format Task Completion section**:
+   - Create header: `## Task Completion`
+   - Create subsection: `### Status Breakdown`
+   - Create table with columns: `| Status | Count | Percentage |`
+   - Add rows for each status: Done, Review, Doing, Todo
+   - Calculate percentage: `(count / total_tasks) * 100`
+   - Add visual bar: `[████████░░░] 80%` (use █ for filled, ░ for empty, 10 bars total)
+   - Create subsection: `### Recent Completions`
+   - Create table with columns: `| Task | Project | Completed | Duration |`
+   - Add up to 5 most recent completed tasks from `recent_completions` array
+   - Format duration as "{hours}h {minutes}m" or "{hours}h"
+
+5. **Format Time Savings section**:
+   - Create header: `## Time Savings`
+   - Create subsection: `### Overall Savings`
+   - Display metrics as bullet list:
+     - `**Total Time Saved**: {total_hours_saved} hours`
+     - `**Average per Task**: {average_savings_per_task} hours`
+     - `**This Week**: {hours_saved_7_days} hours`
+     - `**This Month**: {hours_saved_30_days} hours`
+   - Create subsection: `### Efficiency`
+   - Display: `**Efficiency Rate**: {efficiency_rate}% of potential manual time saved`
+   - Add context: "AI assistance accelerated development by {efficiency_rate}%"
+
+6. **Format Feature Usage section**:
+   - Create header: `## Feature Usage`
+   - Create subsection: `### Reference Library`
+   - Create table with columns: `| Category | References | Last Updated |`
+   - Add rows for each category from `reference_stats`
+   - Format last_updated as YYYY-MM-DD or "-" if null
+   - Add total: `**Total References**: {total_references}`
+   - If library health calculated, add: `**Library Health**: {health_percentage}%`
+   - Create subsection: `### Commands Used`
+   - If command_executions data available:
+     - Create table with columns: `| Command | Executions | Last Used |`
+     - Add rows for top 5 most used commands
+     - Format last_used as relative time ("2 hours ago", "Yesterday", "2026-01-24")
+
+7. **Format Productivity Metrics section**:
+   - Create header: `## Productivity Metrics`
+   - Create table with columns: `| Metric | Value | Benchmark |`
+   - Add rows:
+     - Completion Rate: `{overall_completion_rate}%` | `80% target`
+     - Avg Task Duration: `{average_task_duration_hours}h` | `2h target`
+     - Tasks This Week: `{tasks_completed_7_days}` | `5 target`
+     - Tasks Per Day: `{completion_velocity_7_days}` | `1.5 target`
+     - Active Projects: `{active_projects}` | `-`
+   - Add indicators: ✗ if below benchmark, ✓ if at/above benchmark
+
+8. **Format Insights & Recommendations section**:
+   - Create header: `## Insights & Recommendations`
+   - Create subsection: `### 🎯 What's Working`
+   - Add 2-3 bullet points from "What's Working" insights
+   - Create subsection: `### 💡 Opportunities`
+   - Add 2-3 bullet points from "Opportunities" insights
+   - Create subsection: `### 📈 Improvement Tips`
+   - Add 2-3 bullet points from "Improvement Tips"
+
+9. **Add footer**:
+   - Add separator: `---`
+   - Add export hint: `**Export Data**: Use \`/analytics --export\` to generate CSV/JSON files`
+   - Add timestamp: `**Last Updated**: {current_timestamp}`
+
+10. **Handle edge cases**:
+    - If all metrics are 0 (no data yet):
+      - Display "## No Data Yet" section
+      - Provide setup instructions
+      - Skip detailed sections
+    - If specific data source unavailable:
+      - Display note: `**Note**: {source} data unavailable - {reason}`
+      - Continue with available data
+    - If trend cannot be calculated (no previous period):
+      - Use "→" indicator and "N/A" in Change column
+    - If metric is negative (shouldn't happen):
+      - Clamp to 0, log warning
+    - If percentage exceeds 100%:
+      - Clamp to 100% for display, log warning
+
+**Expected Result**: Comprehensive analytics dashboard displayed with formatted markdown tables, visual indicators, and actionable insights.
+
+**Formatting Example**:
+```markdown
+# Usage Analytics Dashboard
+
+Generated: 2026-01-26T12:00:00Z
+
+## Overview
+
+| Metric | Value | Change |
+|--------|-------|--------|
+| Tasks Completed | 47 | ↑ 12% |
+| Time Saved | 94h | ↑ 8% |
+| Completion Rate | 85% | ↑ 5% |
+| Active Projects | 3 | → |
+
+## Task Completion
+
+### Status Breakdown
+
+| Status | Count | Percentage |
+|--------|-------|------------|
+| Done | 47 | 85% [█████████░░] |
+| Review | 5 | 9% [██░░░░░░░░░] |
+| Doing | 2 | 4% [░░░░░░░░░░] |
+| Todo | 1 | 2% [░░░░░░░░░░] |
+
+### Recent Completions
+
+| Task | Project | Completed | Duration |
+|------|---------|-----------|----------|
+| Implement analytics | proj-123 | 2 hours ago | 1.5h |
+| Fix auth bug | proj-456 | Yesterday | 0.75h |
+| Add tests | proj-123 | 2 days ago | 1h |
+
+## Time Savings
+
+### Overall Savings
+
+- **Total Time Saved**: 94.5 hours
+- **Average per Task**: 2.01 hours
+- **This Week**: 18.5 hours
+- **This Month**: 72.0 hours
+
+### Efficiency
+
+**Efficiency Rate**: 67% of potential manual time saved
+
+## Feature Usage
+
+### Reference Library
+
+| Category | References | Last Updated |
+|----------|------------|--------------|
+| ai-agents | 3 | 2026-01-24 |
+| mcp | 5 | 2026-01-24 |
+| patterns | 2 | 2026-01-23 |
+| python | 4 | 2026-01-22 |
+| react | 0 | - |
+| supabase | 1 | 2026-01-21 |
+| testing | 2 | 2026-01-20 |
+| typescript | 0 | - |
+
+**Total References**: 17
+**Library Health**: 67%
+
+### Commands Used
+
+| Command | Executions | Last Used |
+|---------|------------|-----------|
+| /analytics | 3 | 2 hours ago |
+| /learn | 8 | Yesterday |
+| /learn-health | 12 | 3 days ago |
+
+## Productivity Metrics
+
+| Metric | Value | Benchmark |
+|--------|-------|-----------|
+| Completion Rate | 85% ✓ | 80% target |
+| Avg Task Duration | 0.95h ✓ | 2h target |
+| Tasks This Week | 12 ✓ | 5 target |
+| Active Projects | 3 | - |
+
+## Insights & Recommendations
+
+### 🎯 What's Working
+- Strong task completion rate at 85%
+- Excellent time efficiency with 67% savings
+- High delivery velocity at 1.7 tasks/day
+
+### 💡 Opportunities
+- Learn react patterns with `/learn react`
+- Learn typescript patterns with `/learn typescript`
+
+### 📈 Improvement Tips
+- Review backlog building - consider dedicated review time
+- Close out completed projects to maintain momentum
+
+---
+
+**Export Data**: Use `/analytics --export` to generate CSV/JSON files
+**Last Updated**: 2026-01-26T12:00:00Z
+```
 
 ### Step 7: Export Data (Optional)
 
