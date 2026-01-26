@@ -39,35 +39,104 @@ This command provides transparency into AI-assisted development value and helps 
 **Objective**: Get task completion statistics from Archon MCP.
 
 **Actions**:
-1. Execute Archon MCP calls:
-   ```bash
-   find_tasks(filter_by="status", filter_value="done")
-   find_tasks(filter_by="status", filter_value="review")
-   find_tasks()
-   ```
-2. Parse results into task stats:
-   - Total tasks completed
-   - Tasks in review
-   - Total tasks overall
-   - Tasks by project
 
-**Expected Result**: Task completion statistics object.
+1. **Verify Archon MCP availability**:
+   - Call `health_check()` to verify server is available
+   - If unavailable, display error and fall back to partial dashboard (skip to Step 3)
+
+2. **Query tasks by status**:
+   - Execute: `find_tasks(filter_by="status", filter_value="done")`
+   - Execute: `find_tasks(filter_by="status", filter_value="review")`
+   - Execute: `find_tasks(filter_by="status", filter_value="doing")`
+   - Execute: `find_tasks(filter_by="status", filter_value="todo")`
+   - Execute: `find_tasks()` (all tasks for total count)
+
+3. **Parse task results**:
+   - Extract `task_id`, `title`, `status`, `project_id`, `created_at`, `updated_at` from each task
+   - Count tasks by status: `done_count`, `review_count`, `doing_count`, `todo_count`
+   - Calculate total: `total_tasks = done_count + review_count + doing_count + todo_count`
+   - Group tasks by `project_id` into map: `project_tasks[project_id] = [tasks]`
+   - For done tasks, calculate duration: `duration = updated_at - created_at`
+
+4. **Handle query errors**:
+   - If `find_tasks()` throws error: Log error message, set task stats to empty, continue to next step
+   - If response is malformed: Log parsing error, use partial data if available
+   - If timeout occurs: Increase timeout, retry once, then proceed with partial data
+
+**Expected Result**: Task statistics object with structure:
+```json
+{
+  "total_tasks": 55,
+  "done_count": 47,
+  "review_count": 5,
+  "doing_count": 2,
+  "todo_count": 1,
+  "tasks_by_project": {
+    "proj-123": 25,
+    "proj-456": 30
+  },
+  "recent_completions": [
+    {
+      "task_id": "task-789",
+      "title": "Implement feature",
+      "project_id": "proj-123",
+      "completed_at": "2026-01-26T12:00:00Z",
+      "duration_hours": 1.5
+    }
+  ]
+}
+```
 
 ### Step 2: Query Archon Projects
 
 **Objective**: Get project statistics from Archon MCP.
 
 **Actions**:
-1. Execute Archon MCP call:
-   ```bash
-   find_projects()
-   ```
-2. Parse results into project stats:
-   - Total projects
-   - Active projects
-   - Completed projects
 
-**Expected Result**: Project statistics object.
+1. **Query all projects**:
+   - Execute: `find_projects()` (retrieves all projects)
+   - If Step 1 failed, verify health with `health_check()` before querying
+
+2. **Parse project results**:
+   - Extract `project_id`, `title`, `created_at`, `updated_at` from each project
+   - Cross-reference with task data from Step 1:
+     - For each project, check `project_tasks[project_id]` map
+     - Count tasks in each status: `todo_count`, `doing_count`, `done_count`
+   - Determine project status:
+     - `active`: Has tasks in todo or doing status
+     - `completed`: All tasks are done, no active work
+     - `archived`: No recent activity (no tasks updated in 30 days)
+
+3. **Calculate project metrics**:
+   - `total_projects`: Count of all projects
+   - `active_projects`: Count where project has todo or doing tasks
+   - `completed_projects`: Count where all tasks are done
+   - `archived_projects`: Count with no recent activity
+
+4. **Handle query errors**:
+   - If `find_projects()` throws error: Log error message, set project stats to empty, continue to Step 3
+   - If response is missing fields: Use default values, log warning
+   - If project has no tasks: Mark as active if created within 7 days, otherwise archived
+
+**Expected Result**: Project statistics object with structure:
+```json
+{
+  "total_projects": 5,
+  "active_projects": 3,
+  "completed_projects": 1,
+  "archived_projects": 1,
+  "projects": [
+    {
+      "project_id": "proj-123",
+      "title": "Feature Implementation",
+      "task_count": 25,
+      "done_count": 20,
+      "status": "active",
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  ]
+}
+```
 
 ### Step 3: Query Supabase References
 
