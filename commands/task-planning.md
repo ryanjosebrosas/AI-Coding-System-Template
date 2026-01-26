@@ -1,17 +1,17 @@
 ---
 name: Task Planning
-description: "Generate executable task files and PRP for implementation guidance"
+description: "Combine all contexts into actionable tasks with PRP guidance"
 phase: task-planning
 dependencies: [development]
 outputs:
-  - path: "features/{feature-name}/execution/"
-    description: "Execution folder with individual task files (deleted as tasks complete)"
   - path: "features/{feature-name}/prp.md"
     description: "Plan Reference Protocol document with codebase-aware implementation guidance"
   - path: "features/{feature-name}/task-plan.md"
     description: "Task plan with task IDs, dependencies, and execution order"
   - path: "features/{feature-name}/STATUS.md"
     description: "Updated feature status tracking file"
+  - path: "features/{feature-name}/execution/"
+    description: "Execution folder with individual task files (deleted as tasks complete)"
 inputs:
   - path: "context/prime-{timestamp}.md"
     description: "Most recent codebase export from Prime command"
@@ -34,7 +34,7 @@ inputs:
 
 ## Purpose
 
-Generate executable task files for the execution phase. This command loads all contexts (Prime, Discovery, PRD, Tech Spec), extracts codebase patterns, generates PRP with implementation guidance, breaks down tasks with dependencies, creates tasks in Archon MCP, and generates task plan document with execution folder.
+Combine all contexts (Prime, Discovery, PRD, Tech Spec) into actionable tasks with PRP guidance. This command loads all contexts, extracts codebase patterns, selects appropriate PRP template, generates PRP with codebase-aware context, breaks down tasks with dependencies, creates tasks in Archon MCP, and generates task plan document.
 
 ## Execution Steps
 
@@ -227,10 +227,10 @@ Create local execution folder with individual task files for visibility and trac
 
 **Expected Result**: Execution folder created with task files for local tracking.
 
-**Task File Workflow**:
+**Workflow**: 
 - Tasks exist in both Archon (source of truth) AND execution folder (local visibility)
 - When task completes: Mark done in Archon → Delete the file
-- When all task files deleted (only INDEX.md remains): Feature is complete
+- When all task files deleted: Feature is complete
 
 ### Step 7: Save Documents and Update Status
 
@@ -257,21 +257,28 @@ Save PRP and task plan, update feature STATUS:
 
 ## Output Format
 
-### Execution Folder Structure
+### PRP Document
 
-```
-features/{feature-name}/execution/
-├── INDEX.md                    # Task index with links to all task files
-├── 01-task-slug.md            # Task file (deleted upon completion)
-├── 02-task-slug.md            # Task file (deleted upon completion)
-├── 03-task-slug.md            # Task file (deleted upon completion)
-└── ...                        # More task files
-```
+```markdown
+# PRP: {feature-name}
 
-**Task File Workflow**:
-- Tasks exist in both Archon (source of truth) AND execution folder (local visibility)
-- When task completes: Mark done in Archon → Delete the file
-- When all task files deleted (only INDEX.md remains): Feature is complete
+**Version**: 1.0 | **Last Updated**: {timestamp} | **Related**: PRD.md, TECH-SPEC.md
+
+## Goal
+{Goal section populated from context}
+
+## All Needed Context
+{Context section populated with codebase patterns}
+
+## Implementation Blueprint
+{Implementation Blueprint section populated from Tech Spec and PRD}
+
+## Validation Loop
+{Validation Loop section populated from codebase patterns}
+
+## Anti-Patterns
+{Anti-patterns section populated from template}
+```
 
 ### Task Plan Document
 
@@ -302,29 +309,6 @@ features/{feature-name}/execution/
 - Track progress in Archon MCP
 ```
 
-### PRP Document
-
-```markdown
-# PRP: {feature-name}
-
-**Version**: 1.0 | **Last Updated**: {timestamp} | **Related**: PRD.md, TECH-SPEC.md
-
-## Goal
-{Goal section populated from context}
-
-## All Needed Context
-{Context section populated with codebase patterns}
-
-## Implementation Blueprint
-{Implementation Blueprint section populated from Tech Spec and PRD}
-
-## Validation Loop
-{Validation Loop section populated from codebase patterns}
-
-## Anti-Patterns
-{Anti-patterns section populated from template}
-```
-
 ## Error Handling
 
 - **Prime Export Not Found**: Check `context/` directory, list available exports, suggest running `/prime`
@@ -347,7 +331,3 @@ features/{feature-name}/execution/
 - Each task should represent 30 minutes to 4 hours of work
 - Higher task_order = higher priority
 - Only ONE task in 'doing' status at a time
-- Execution folder is primary deliverable that drives the execution phase
-- Task files exist in both Archon (source of truth) AND execution folder (local visibility)
-- When task completes: Mark done in Archon → Delete the file
-- When all task files deleted (only INDEX.md remains): Feature is complete

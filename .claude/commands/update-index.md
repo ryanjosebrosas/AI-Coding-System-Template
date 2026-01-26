@@ -20,40 +20,44 @@ dependencies:
 
 ## Purpose
 
-Update or create INDEX.md files with file entries to provide navigation and tracking across the AI Coding Workflow System.
+Update or create INDEX.md files with file entries for navigation and tracking across the AI Coding Workflow System.
 
-## When to Use
+**When to use**: After creating any new file in the workflow system (Prime exports, Discovery documents, PRDs, PRPs, execution logs, reviews, test results).
 
-Use this command after creating any new file in the workflow system:
-- After Prime command creates `context/prime-{timestamp}.md`
-- After Discovery command creates `discovery/discovery-{timestamp}.md`
-- After Planning command creates `features/{feature-name}/` directory
-- After Review command creates `reviews/review-{timestamp}.md`
-- After Test command creates `testing/test-results-{timestamp}.md`
+## Workflow Integration
+
+This command is auto-called as the final step in other workflow commands to ensure INDEX.md stays synchronized.
+
+**Auto-Trigger Pattern**:
+1. Create primary output file
+2. Extract metadata (timestamp, description)
+3. Call update-index with parameters
+4. Continue with next workflow step
+
+**Expected Calls by Command**:
+| Command | When Called | Parameters |
+|---------|-------------|------------|
+| `/prime` | After saving context export | directory="context", filename="prime-{ts}.md" |
+| `/discovery` | After saving discovery doc | directory="discovery", filename="discovery-{ts}.md" |
+| `/planning` | After creating feature directory | directory="features", filename="{feature}", is_directory=true |
+| `/execution` | After creating execution log | directory="execution", regenerate=true |
+| `/review` | After saving review report | directory="reviews", filename="review-{ts}.md" |
+| `/test` | After saving test results | directory="testing", filename="test-results-{ts}.md" |
 
 ## Execution Steps
 
 ### Step 1: Determine Parameters
 
-Extract parameters from command context:
-- `directory`: The directory being updated
-- `filename`: The file or subdirectory being added
-- `description`: Optional description (extract from file if not provided)
-- `timestamp`: Optional timestamp (extract from filename or use current time)
-- `is_directory`: True if adding a feature subdirectory
-- `regenerate`: True if regenerating entire INDEX.md
+Extract: `directory`, `filename`, `description`, `timestamp`, `is_directory`, `regenerate`
 
 ### Step 2: Read Existing INDEX.md
 
 If `regenerate` is false:
 1. Check if `{directory}/INDEX.md` exists
-2. If exists, read current content
-3. Parse existing file entries
-4. Check if filename already exists in index
+2. If exists, read and parse entries
+3. Check if filename already in index
 
 ### Step 3: Generate File Entry
-
-Create new file entry in format:
 
 ```markdown
 ### {filename}
@@ -62,36 +66,51 @@ Create new file entry in format:
 - **Link**: [{filename}](./{filename})
 ```
 
-For feature directories (features/):
+For feature directories:
 ```markdown
 ### {feature-name}
-- **Created**: {timestamp}
+- **Status**: {current_phase}
 - **Description**: {description}
 - **Link**: [{feature-name}/](./{feature-name}/)
-- **Status**: {current_phase}
-- **Artifacts**: {list_of_artifacts}
+- **Artifacts**: {list}
 ```
 
-### Step 4: Update INDEX.md
+### Step 4: Auto-Detection Scan (regenerate=true)
 
-If `regenerate` is false:
-1. Read existing INDEX.md
-2. Insert new entry in chronological order (newest first)
-3. Preserve overview and navigation sections
-4. Write back to file
+**Scan patterns by directory**:
+
+| Directory | Pattern | Example | Timestamp Source | Sort |
+|-----------|---------|---------|------------------|------|
+| `context/` | `prime-*.md` | `prime-2026-01-23T14:30:00Z.md` | Filename | Newest |
+| `discovery/` | `discovery-*.md` | `discovery-*.md` | Filename | Newest |
+| `features/` | Subdirectories | `{feature}/` | STATUS.md or mtime | Newest |
+| `reviews/` | `review-*.md` | `review-*.md` | Filename | Newest |
+| `testing/` | `test-results-*.md` | `test-results-*.md` | Filename | Newest |
+| `execution/` | `{number}-*.md` | `01-*.md` | Filename prefix | Ascending |
+| `templates/` | All files | Various | Alphabetical | A-Z |
+
+**Comparison logic**:
+- New files (in dir, not in INDEX) → Add
+- Missing files (in INDEX, not in dir) → Flag
+- Updated files (timestamps differ) → Update
+- Unchanged (timestamps match) → Skip
+
+### Step 5: Update INDEX.md
+
+If `regenerate` is false: Insert new entry chronologically (newest first)
 
 If `regenerate` is true:
-1. Scan directory for all files/subdirectories
-2. Extract metadata from each (timestamp from filename or filesystem)
-3. Generate complete INDEX.md with all entries
-4. Sort by timestamp (newest first, or alphabetical for templates/)
+1. Use scan results
+2. Extract metadata from each file
+3. Generate complete INDEX.md
+4. Include detection report
 
-### Step 5: Handle Edge Cases
+### Step 6: Handle Edge Cases
 
-- **INDEX.md doesn't exist**: Create with template structure
-- **File already in index**: Update entry or skip if unchanged
-- **Directory is empty**: Create INDEX.md with "No files yet" message
-- **Corrupted INDEX.md**: Backup and regenerate
+- INDEX.md missing → Create with template
+- File already indexed → Update or skip if unchanged
+- Empty directory → Create with "No files yet"
+- Corrupted INDEX.md → Backup and regenerate
 
 ## Output Format
 
@@ -101,19 +120,18 @@ If `regenerate` is true:
 # Context Index
 
 ## Overview
-This directory contains codebase context exports from the Prime command. Each export is a complete snapshot of the codebase at a specific point in time.
+Codebase context exports from Prime command. Each export is a complete snapshot.
 
 ## Files
 
-### prime-2026-01-23T14:30:00Z.md
-- **Created**: 2026-01-23T14:30:00Z
-- **Description**: Codebase export from Prime command
-- **Link**: [prime-2026-01-23T14:30:00Z.md](./prime-2026-01-23T14:30:00Z.md)
+### prime-2026-01-24T17-34-57Z.md
+- **Created**: 2026-01-24T17:34:57Z
+- **Description**: Complete codebase export
+- **File Count**: 74 files
+- **Link**: [View Export](./prime-2026-01-24T17-34-57Z.md)
 
 ## Navigation
 - [Back to Root](../)
-- [Features](../features/)
-- [Discovery](../discovery/)
 ```
 
 ### discovery/INDEX.md Template
@@ -122,19 +140,17 @@ This directory contains codebase context exports from the Prime command. Each ex
 # Discovery Index
 
 ## Overview
-This directory contains discovery phase outputs. Discovery documents explore ideas, inspiration, and needs for AI agents and AI/ATR applications.
+Discovery phase outputs exploring ideas and opportunities.
 
 ## Files
 
 ### discovery-2026-01-23T15:00:00Z.md
 - **Created**: 2026-01-23T15:00:00Z
-- **Description**: Discovery document with ideas, inspiration, needs, opportunities
-- **Link**: [discovery-2026-01-23T15:00:00Z.md](./discovery-2026-01-23T15:00:00Z.md)
+- **Description**: Discovery document
+- **Link**: [View](./discovery-2026-01-23T15:00:00Z.md)
 
 ## Navigation
 - [Back to Root](../)
-- [Context](../context/)
-- [Features](../features/)
 ```
 
 ### features/INDEX.md Template
@@ -143,21 +159,19 @@ This directory contains discovery phase outputs. Discovery documents explore ide
 # Features Index
 
 ## Overview
-This directory contains all feature-specific artifacts organized by feature name. Each feature has its own subdirectory with PRD, tech spec, PRP, task plans, execution logs, reviews, and test results.
+Feature-specific artifacts organized by feature name.
 
 ## Features
 
-### ai-coding-workflow-system
-- **Created**: 2026-01-23T16:00:00Z
-- **Description**: AI Coding Workflow System feature
-- **Link**: [ai-coding-workflow-system/](./ai-coding-workflow-system/)
-- **Status**: Planning phase
-- **Artifacts**: prd.md, tech-spec.md
+### smart-reference-library
+- **Status**: Execution Completed
+- **Description**: Token-efficient reference library
+- **Phase**: Ready for Review & Test
+- **Artifacts**: [PRP](./smart-reference-library/prp.md), [Task Plan](./smart-reference-library/task-plan.md)
+- **Archon Project ID**: `acf45b67-...`
 
 ## Navigation
 - [Back to Root](../)
-- [Context](../context/)
-- [Discovery](../discovery/)
 ```
 
 ### reviews/INDEX.md Template
@@ -166,19 +180,14 @@ This directory contains all feature-specific artifacts organized by feature name
 # Reviews Index
 
 ## Overview
-This directory contains code review reports generated by the Review command. Reviews analyze code quality, security, performance, and compliance with PRD and tech spec.
+Code review reports analyzing quality, security, performance.
 
 ## Files
 
 ### review-2026-01-23T20:00:00Z.md
 - **Created**: 2026-01-23T20:00:00Z
-- **Description**: Code review for feature ai-coding-workflow-system
-- **Link**: [review-2026-01-23T20:00:00Z.md](./review-2026-01-23T20:00:00Z.md)
-
-## Navigation
-- [Back to Root](../)
-- [Features](../features/)
-- [Testing](../testing/)
+- **Description**: Code review for {feature}
+- **Link**: [View](./review-2026-01-23T20:00:00Z.md)
 ```
 
 ### testing/INDEX.md Template
@@ -187,78 +196,104 @@ This directory contains code review reports generated by the Review command. Rev
 # Testing Index
 
 ## Overview
-This directory contains test execution results generated by the Test command. Test results include test outcomes, coverage analysis, and AI-suggested fixes.
+Test execution results with outcomes and coverage analysis.
 
 ## Files
 
 ### test-results-2026-01-23T21:00:00Z.md
 - **Created**: 2026-01-23T21:00:00Z
-- **Description**: Test results for feature ai-coding-workflow-system
-- **Link**: [test-results-2026-01-23T21:00:00Z.md](./test-results-2026-01-23T21:00:00Z.md)
+- **Description**: Test results for {feature}
+- **Link**: [View](./test-results-2026-01-23T21:00:00Z.md)
+```
 
-## Navigation
-- [Back to Root](../)
-- [Features](../features/)
-- [Reviews](../reviews/)
+### execution/INDEX.md Template
+
+```markdown
+# Execution Directory
+
+Task execution documents linked to Archon MCP tasks.
+
+## Tasks
+
+| # | Task | Status | Description |
+|---|------|--------|-------------|
+| 01 | [Create Directory Structure](01-create-directory-structure.md) | Done | Create project structure |
+| 28 | [Deployment Handoff](28-system-deployment-handoff.md) | Done | Final deployment |
+
+## Links
+- [../INDEX.md](../INDEX.md) - Root index
 ```
 
 ## Error Handling
 
-### If INDEX.md doesn't exist
-- Create new INDEX.md with appropriate template
-- Include overview and navigation sections
-- Add first file entry
-
-### If directory doesn't exist
-- Create directory first
-- Then create INDEX.md
-- Report permission errors if unable to create
-
-### If file already in index
-- Compare timestamps
-- Update entry if file was modified
-- Skip if unchanged
-
-### If INDEX.md is corrupted
-- Detect corruption (invalid markdown structure)
-- Backup existing file to INDEX.md.backup
-- Regenerate from directory contents
-- Log the recovery action
+| Error | Recovery |
+|-------|----------|
+| INDEX.md missing | Create with template |
+| Directory missing | Create directory first |
+| File already indexed | Update if modified, skip if unchanged |
+| INDEX.md corrupted | Backup and regenerate |
 
 ## Usage Examples
 
-### Adding a Prime export
-
+**Add Prime export**:
 ```
-/update-index directory="context" filename="prime-2026-01-23T14:30:00Z.md" description="Codebase export from Prime command" timestamp="2026-01-23T14:30:00Z"
-```
-
-### Adding a feature directory
-
-```
-/update-index directory="features" filename="ai-coding-workflow-system" description="AI Coding Workflow System feature" is_directory=true status="Planning phase" artifacts="prd.md, tech-spec.md"
+/update-index directory="context" filename="prime-2026-01-23T14:30:00Z.md"
 ```
 
-### Regenerating entire INDEX.md
+**Add feature directory**:
+```
+/update-index directory="features" filename="ai-coding-workflow-system" is_directory=true
+```
 
+**Regenerate entire INDEX.md**:
 ```
 /update-index directory="context" regenerate=true
 ```
 
 ## Validation
 
-After updating INDEX.md:
-- [ ] File was created or updated successfully
-- [ ] New entry appears in correct location (chronological order)
-- [ ] Markdown formatting is correct
-- [ ] Navigation links are valid
-- [ ] Description is accurate
-- [ ] Timestamp is in ISO 8601 format
+- [ ] File created/updated successfully
+- [ ] Entry in correct location
+- [ ] Markdown formatting correct
+- [ ] Navigation links valid
+- [ ] Timestamp in ISO 8601 format
+
+## Reference Tables
+
+**Metadata Fields by Directory**:
+
+| Directory | Required | Optional | Data Source |
+|-----------|----------|----------|-------------|
+| `context/` | Created, Description, Link | File Count, Total Lines | Filename, content |
+| `discovery/` | Created, Description, Link | Feature Name | Filename, frontmatter |
+| `features/` | Status, Description, Phase | Artifacts, Project ID | STATUS.md |
+| `reviews/` | Created, Description, Link | Feature Name | Filename, frontmatter |
+| `testing/` | Created, Description, Link | Feature Name | Filename, frontmatter |
+| `execution/` | #, Task, Status | Task ID | Filename, metadata |
+| `templates/` | Category, Link | Description | Filesystem |
+
+**Timestamp Extraction Patterns**:
+
+| Pattern | Regex | Example | Extracted |
+|---------|-------|---------|-----------|
+| `prime-{ts}.md` | `prime-(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)\.md` | `prime-2026-01-23T14:30:00Z.md` | `2026-01-23T14:30:00Z` |
+| `{number}-{name}.md` | `^(\d{2})-(.+)\.md$` | `01-create.md` | `01` |
+
+**Default Descriptions**:
+
+| File Type | Default Description |
+|-----------|---------------------|
+| `prime-*.md` | "Complete codebase export from Prime command" |
+| `discovery-*.md` | "Discovery document with ideas, inspiration, needs" |
+| `review-*.md` | "Code review for feature {feature-name}" |
+| `test-results-*.md` | "Test results for feature {feature-name}" |
+| Templates | Descriptive title based on filename |
 
 ## Notes
 
-- Use ISO 8601 format for timestamps: YYYY-MM-DDTHH:mm:ssZ
-- Sort entries newest first (except templates/ which is alphabetical)
-- Use relative paths for navigation links
-- Extract description from file frontmatter when possible
-- Call this command after any file creation operation
+- Use ISO 8601 timestamps: YYYY-MM-DDTHH:mm:ssZ
+- Sort newest first (except templates/ which is alphabetical)
+- Use relative paths for links
+- Extract description from frontmatter when possible
+- Auto-detection ensures synchronization
+- Missing files are flagged for manual review

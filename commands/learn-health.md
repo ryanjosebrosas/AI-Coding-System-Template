@@ -23,7 +23,6 @@ This command provides a quick overview of the reference library's growth and cov
 ## Prerequisites
 
 - Supabase `archon_references` table exists (Migration 012)
-- Migration 013 recommended for enhanced statistics (token_count, relevance_score, compression)
 - Direct SQL access to Supabase
 
 ## Execution Steps
@@ -115,87 +114,7 @@ This command provides a quick overview of the reference library's growth and cov
 
 **Expected Result**: List of actionable learning suggestions.
 
-### Step 6: Query Token and Relevance Statistics
-
-**Objective**: Get aggregate statistics for tokens and relevance scores.
-
-**Actions**:
-1. Execute SQL query (direct Supabase access):
-   ```sql
-   SELECT
-     COUNT(*) as total_refs,
-     COALESCE(SUM(token_count), 0) as total_tokens,
-     COALESCE(AVG(relevance_score), 0) as avg_relevance,
-     COALESCE(MIN(relevance_score), 0) as min_relevance,
-     COALESCE(MAX(relevance_score), 0) as max_relevance
-   FROM archon_references
-   WHERE duplicate_of IS NULL;
-   ```
-
-**Expected Result**: Aggregate statistics including total token count and relevance metrics.
-
-### Step 7: Query Top References by Relevance
-
-**Objective**: Get highest relevance references to show best content.
-
-**Actions**:
-1. Execute SQL query (direct Supabase access):
-   ```sql
-   SELECT
-     topic,
-     category,
-     relevance_score,
-     token_count,
-     usage_count,
-     last_used_at
-   FROM archon_references
-   WHERE duplicate_of IS NULL
-   ORDER BY relevance_score DESC, usage_count DESC
-   LIMIT 10;
-   ```
-
-**Expected Result**: List of top 10 references by relevance score.
-
-### Step 8: Query Compression Statistics
-
-**Objective**: Get statistics on compressed references and token savings.
-
-**Actions**:
-1. Execute SQL query (direct Supabase access):
-   ```sql
-   SELECT
-     COUNT(*) as compressed_count,
-     COALESCE(SUM(token_count), 0) as original_tokens,
-     COALESCE(SUM((compressed_content->>'token_count')::int), 0) as compressed_tokens
-   FROM archon_references
-   WHERE is_compressed = true AND duplicate_of IS NULL;
-   ```
-
-**Expected Result**: Compression statistics including count and token savings.
-
-### Step 9: Calculate Token Savings
-
-**Objective**: Calculate token savings from selective loading vs. loading all references.
-
-**Actions**:
-1. Get average tokens per category:
-   - Use category stats from Step 1
-   - For each category with references, calculate average tokens: `total_tokens / count`
-2. Calculate typical selective load:
-   - Assume typical PRP loads 2-3 categories
-   - Sum tokens from top 3 categories by reference count
-   - If fewer than 3 categories have references, use available categories
-3. Calculate savings:
-   - `all_references_tokens` = total_tokens from Step 6
-   - `selective_load_tokens` = sum of tokens from 2-3 typical categories
-   - `savings_percentage` = `((all_references_tokens - selective_load_tokens) / all_references_tokens) * 100`
-4. Handle edge cases:
-   - If total_tokens = 0: Show "N/A" for all values
-   - If fewer than 2 categories have references: Use available categories only
-
-**Expected Result**: Token savings metrics showing benefit of selective loading.
-
-### Step 10: Display Report
+### Step 6: Display Report
 
 **Objective**: Present formatted health report to user.
 
@@ -212,29 +131,6 @@ This command provides a quick overview of the reference library's growth and cov
 
    **Total References**: {total_count}
 
-   ### Token Statistics
-   - **Total Tokens**: {total_tokens:,}
-   - **Average Relevance**: {avg_relevance:.1f}/100
-   - **Relevance Range**: {min_relevance} - {max_relevance}
-
-   ### Token Savings from Selective Loading
-   - **If you loaded all references**: {all_references_tokens:,} tokens
-   - **With selective loading (2-3 categories)**: {selective_load_tokens:,} tokens
-   - **Savings**: {savings_percentage:.1f}%
-
-   ### Top References by Relevance
-   | Topic | Category | Relevance | Tokens | Used |
-   |-------|----------|-----------|--------|------|
-   | {topic1} | {category} | {score} | {tokens} | {count} |
-   | {topic2} | {category} | {score} | {tokens} | {count} |
-   | ...
-
-   ### Compression Statistics
-   - **Compressed References**: {compressed_count}
-   - **Original Tokens**: {original_tokens:,}
-   - **Compressed Tokens**: {compressed_tokens:,}
-   - **Space Saved**: {savings_percentage:.1f}%
-
    ### Empty Categories
    {empty_categories_list}
 
@@ -247,7 +143,7 @@ This command provides a quick overview of the reference library's growth and cov
    Use `/learn {topic}` to add new references.
    ```
 
-**Expected Result**: Enhanced health report displayed to user with token savings calculation.
+**Expected Result**: Health report displayed to user.
 
 ## Output Format
 
@@ -268,36 +164,6 @@ The command displays a formatted health report:
 | typescript | 0 | - |
 
 **Total References**: 17
-
-### Token Statistics
-- **Total Tokens**: 45,230
-- **Average Relevance**: 68.5/100
-- **Relevance Range**: 42 - 95
-
-### Token Savings from Selective Loading
-- **If you loaded all references**: 45,230 tokens
-- **With selective loading (2-3 categories)**: 18,450 tokens
-- **Savings**: 59.2%
-
-### Top References by Relevance
-| Topic | Category | Relevance | Tokens | Used |
-|-------|----------|-----------|--------|------|
-| MCP tool development | mcp | 95 | 2,340 | 12 |
-| Python async patterns | python | 92 | 1,890 | 8 |
-| React hooks best practices | react | 88 | 1,650 | 6 |
-| Supabase RLS policies | supabase | 85 | 2,100 | 5 |
-| AI agent orchestration | ai-agents | 82 | 2,400 | 4 |
-| TypeScript generics | typescript | 78 | 1,920 | 3 |
-| Design patterns SOLID | patterns | 75 | 1,560 | 3 |
-| pytest fixtures | testing | 72 | 1,380 | 2 |
-| FastAPI dependency injection | python | 68 | 1,750 | 2 |
-| GraphQL schema design | api | 65 | 2,200 | 1 |
-
-### Compression Statistics
-- **Compressed References**: 8
-- **Original Tokens**: 32,400
-- **Compressed Tokens**: 18,900
-- **Space Saved**: 41.7%
 
 ### Empty Categories
 - react
@@ -333,13 +199,6 @@ Use `/learn {topic}` to add new references.
 - **Detection**: Total count = 0
 - **Recovery**: Display "Library is empty" message, suggest running `/learn`
 
-### New Columns Not Found
-
-- **Cause**: Migration 013 hasn't been run (missing token_count, relevance_score, etc.)
-- **Detection**: SQL query fails with "column does not exist"
-- **Recovery**: Fall back to basic health report without token/relevance stats, inform user about migration 013
-- **User Message**: "Note: Enhanced statistics require Migration 013. Run migration 013 to see token usage, relevance scores, and compression stats."
-
 ## Examples
 
 ### Example 1: Healthy Library
@@ -363,31 +222,6 @@ Use `/learn {topic}` to add new references.
 
 **Total References**: 40
 
-### Token Statistics
-- **Total Tokens**: 98,450
-- **Average Relevance**: 76.3/100
-- **Relevance Range**: 52 - 98
-
-### Token Savings from Selective Loading
-- **If you loaded all references**: 98,450 tokens
-- **With selective loading (2-3 categories)**: 39,380 tokens
-- **Savings**: 60.0%
-
-### Top References by Relevance
-| Topic | Category | Relevance | Tokens | Used |
-|-------|----------|-----------|--------|------|
-| Advanced MCP patterns | mcp | 98 | 3,120 | 18 |
-| Python async mastery | python | 94 | 2,890 | 15 |
-| React performance | react | 91 | 2,450 | 12 |
-| AI agent workflows | ai-agents | 89 | 3,200 | 10 |
-| TypeScript advanced types | typescript | 86 | 2,670 | 8 |
-
-### Compression Statistics
-- **Compressed References**: 22
-- **Original Tokens**: 72,300
-- **Compressed Tokens**: 38,900
-- **Space Saved**: 46.2%
-
 ### Empty Categories
 - api
 
@@ -409,25 +243,6 @@ Use `/learn {topic}` to add new references.
 
 **Total References**: 0
 
-### Token Statistics
-- **Total Tokens**: 0
-- **Average Relevance**: 0/100
-- **Relevance Range**: N/A
-
-### Token Savings from Selective Loading
-- **If you loaded all references**: 0 tokens
-- **With selective loading (2-3 categories)**: 0 tokens
-- **Savings**: N/A
-
-### Top References by Relevance
-No references yet.
-
-### Compression Statistics
-- **Compressed References**: 0
-- **Original Tokens**: 0
-- **Compressed Tokens**: 0
-- **Space Saved**: 0%
-
 ### All Categories Empty
 Your reference library is empty! Start learning:
 
@@ -446,10 +261,6 @@ Use `/learn {topic}` to add your first reference.
 - **Token efficient**: Only queries stats, doesn't load full reference content
 - **Actionable suggestions**: Based on actual gaps in your library
 - **Growth tracking**: Watch health percentage improve over time
-- **Token visibility**: Track total token usage across all references
-- **Relevance insights**: See which references are most valuable (high relevance score)
-- **Compression tracking**: Monitor space savings from compression
-- **Usage analytics**: Top references show which content is most used
 
 ## Standard Categories
 
@@ -475,11 +286,7 @@ After executing this command:
 - [ ] Health percentage accurate
 - [ ] Empty categories identified
 - [ ] Suggestions generated
-- [ ] Token statistics calculated (total, avg relevance, range)
-- [ ] Token savings calculated (all references vs selective loading)
-- [ ] Top references retrieved and displayed
-- [ ] Compression statistics calculated
-- [ ] Report formatted and displayed with token savings section
+- [ ] Report formatted and displayed
 
 ## Integration with Other Commands
 

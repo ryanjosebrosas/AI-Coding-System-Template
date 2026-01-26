@@ -77,7 +77,7 @@ web_reader_read(url="...")  # or zread_read(url="...")
 rag_search_knowledge_base(query="similar patterns", ...)
 ```
 
-**Fallback**: If web MCP servers unavailable, use Claude's built-in web search (may consume more tokens).
+**Fallback**: If web MCP servers unavailable, use the AI agent's built-in web search (may consume more tokens).
 
 ## Project Workflows
 
@@ -163,7 +163,7 @@ health_check()  # Should return healthy status
 4. **Document the issue** in your response
 
 **If Web MCP servers are unavailable:**
-- Use Claude's built-in web search as fallback
+- Use the AI agent's built-in web search as fallback
 - Inform user that advanced web features may be limited
 - Continue with available functionality
 
@@ -175,7 +175,7 @@ health_check()  # Should return healthy status
 - **WAIT** for Archon MCP to be available before proceeding
 
 **Web MCP Servers Unavailable**:
-- Use Claude's built-in web search
+- Use the AI agent's built-in web search
 - May consume more tokens
 - Continue with available functionality
 
@@ -267,59 +267,18 @@ See `PRD.md` and `TECH-SPEC.md` for detailed command documentation.
 
 ## Reference Library
 
-The Smart Reference Library stores digested coding insights in Supabase (`archon_references` table) for token-efficient context loading with **90%+ token savings** through selective loading, relevance scoring, and compression.
+The Smart Reference Library stores digested coding insights in Supabase (`archon_references` table) for token-efficient context loading.
 
 ### Available Commands:
 
-- `/learn {topic}` - Search RAG/web, digest findings, and store approved insights with auto-tagging and relevance scoring
-- `/learn-health` - Check library health, category statistics, token usage, and savings
-- `/learn-dedupe` - Find and merge duplicate references to reduce redundancy
-- `/learn-compress` - Compress reference content to remove redundant insights and examples
+- `/learn {topic}` - Search RAG/web, digest findings, and store approved insights
+- `/learn-health` - Check library health and category statistics
 
 ### How It Works:
 
 1. **Building the Library**: Run `/learn {topic}` to search, digest, and save insights
-2. **Health Tracking**: Run `/learn-health` to see token usage, relevance scores, and savings
-3. **Deduplication**: Run `/learn-dedupe` to find and merge duplicate references
-4. **Compression**: Run `/learn-compress` to remove redundant content and save tokens
-5. **Selective Loading**: PRPs specify required categories and relevance thresholds, only those load into context
-
-### Relevance Scoring:
-
-Each reference is scored (0-100) based on:
-- **Usage (40%)**: How often the reference is accessed
-- **Recency (30%)**: How recently it was last used
-- **Quality (20%)**: Content completeness and accuracy
-- **Tokens (10%)**: Concise, high-value content scores higher
-
-**Usage**: When loading references, sort by `relevance_score DESC` to prioritize high-value context.
-
-### Token Tracking:
-
-Each reference tracks:
-- `token_count` - Estimated token usage of content
-- `usage_count` - Number of times loaded
-- `last_used_at` - Timestamp of last access
-- Total library tokens shown in `/learn-health`
-
-**Savings Calculation**:
-- **All References**: Sum of all `token_count` values
-- **Selective Loading**: Only load specified categories (e.g., python, mcp)
-- **Relevance Filter**: Optional threshold (e.g., `relevance_score > 50`)
-- **Compression**: `/learn-compress` removes redundant content (20-40% savings per reference)
-- **Total Savings**: Typically 90%+ when combining selective loading + relevance + compression
-
-### Compression:
-
-The `/learn-compress` command reduces token usage by:
-1. **Detecting Redundancy**: Finds repeated insights and similar code examples
-2. **Removing Fluff**: Eliminates verbose phrases and filler content
-3. **Consolidating Examples**: Merges similar code snippets
-4. **Preserving Quality**: Maintains technical accuracy and readability
-
-**Compression Metadata**:
-- `is_compressed` - Boolean flag
-- `compressed_content` - JSONB with original token count, compression ratio, removed sections
+2. **Health Tracking**: Run `/learn-health` to see which categories need attention
+3. **Selective Loading**: PRPs specify required categories, only those load into context
 
 ### Standard Categories:
 
@@ -342,32 +301,22 @@ The `/learn-compress` command reduces token usage by:
 ### Reference Library
 **Required Categories**: python, mcp
 **Optional Tags**: async, testing
-**Relevance Threshold**: 50 (optional, default: 0)
-**Max Tokens**: 8000 (optional, default: unlimited)
 ```
 
 **Loading Flow**:
 1. PRP specifies categories: `["python", "mcp"]`
-2. Apply relevance threshold: `WHERE relevance_score >= 50`
-3. Apply token limit: Sort by relevance, take top references until token limit
-4. Query: `SELECT * FROM archon_references WHERE category IN ('python', 'mcp') AND relevance_score >= 50 ORDER BY relevance_score DESC, token_count ASC`
-5. Only matching references load into context
-6. Context stays lean and relevant (typically 90%+ token savings)
+2. Query: `SELECT * FROM archon_references WHERE category = 'python' OR 'mcp' = ANY(tags)`
+3. Only matching references load into context
+4. Context stays lean and relevant
 
 ### Usage Examples:
 
 ```bash
-# Learn Python async patterns (with auto-tagging and relevance scoring)
+# Learn Python async patterns
 /learn python async patterns
 
-# Check library health (token usage, relevance stats, savings)
+# Check library health
 /learn-health
-
-# Find and merge duplicate references
-/learn-dedupe
-
-# Compress redundant content to save tokens
-/learn-compress
 
 # Learn React hooks
 /learn react hooks

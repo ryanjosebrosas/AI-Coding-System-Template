@@ -73,18 +73,11 @@ Transform discovery insights into a comprehensive PRD (Product Requirements Docu
 
 **Actions**:
 1. Search RAG: `rag_search_knowledge_base(query="PRD template", match_count=5, return_mode="pages")`
-   - **Cache**: Results automatically cached by query hash for faster subsequent searches
 2. Search web: `web_search_prime_search(query="PRD template best practices")`
-   - **Cache**: Web search results cached to reduce redundant API calls
 3. Read relevant pages: `rag_read_full_page()` and `web_reader_read()`
 4. Extract: PRD structure, sections, format guidelines
 
-**Cache Benefits**:
-- **Faster responses**: Cached RAG and web queries return instantly
-- **Token efficiency**: Reduces redundant RAG server and web API calls
-- **Better performance**: Especially for repeated PRD template searches during planning sessions
-
-**Expected Result**: PRD templates and best practices gathered (from cache or fresh searches).
+**Expected Result**: PRD templates and best practices gathered.
 
 ### Step 5: Generate PRD Content
 
@@ -168,12 +161,12 @@ Transform discovery insights into a comprehensive PRD (Product Requirements Docu
 
 ## MCP Tool Reference
 
-| Tool | Purpose | Query | Cache Behavior |
-|------|---------|-------|----------------|
-| `rag_search_knowledge_base()` | Find PRD templates | "PRD template" | Cached by query hash (1 hour TTL) |
-| `web_search_prime_search()` | Find best practices | "PRD template best practices" | Cached to reduce API calls |
-| `rag_read_full_page()` | Get full content | Use page_id from search | Cached content |
-| `web_reader_read()` | Read web content | Use URL from search | Cached content |
+| Tool | Purpose | Query |
+|------|---------|-------|
+| `rag_search_knowledge_base()` | Find PRD templates | "PRD template" |
+| `web_search_prime_search()` | Find best practices | "PRD template best practices" |
+| `rag_read_full_page()` | Get full content | Use page_id from search |
+| `web_reader_read()` | Read web content | Use URL from search |
 
 ## Examples
 
@@ -193,9 +186,6 @@ Transform discovery insights into a comprehensive PRD (Product Requirements Docu
 - Each user story has acceptance criteria
 - Features prioritized: High/Medium/Low
 - PRD serves as foundation for Development and Task Planning phases
-- **RAG and web search caching**: PRD template searches automatically cached with TTL (1 hour default for RAG)
-- **Cache management**: Use `/cache-invalidate --type rag` or `/cache-invalidate --type web` to clear caches if needed
-- **Cache stats**: Use `/cache-stats` to view cache hit rates and performance metrics
 
 ## Validation
 

@@ -4,8 +4,10 @@ description: "Explore ideas, inspiration, and needs for AI agents and AI/ATR app
 phase: discovery
 dependencies: [prime]
 outputs:
-  - path: "MVP.md"
+  - path: "discovery/discovery-{timestamp}.md"
     description: "Discovery document with ideas, inspiration sources, needs analysis, and opportunities"
+  - path: "discovery/INDEX.md"
+    description: "Updated index of all discovery documents"
 inputs:
   - path: "context/prime-{timestamp}.md"
     description: "Most recent codebase export from Prime command"
@@ -130,7 +132,7 @@ Compile all findings into discovery document:
 
 1. **Create document structure**:
    ```markdown
-   # MVP Discovery
+   # Discovery: {timestamp}
 
    ## Codebase Overview
    {Summary of codebase structure, technology stack, patterns}
@@ -160,15 +162,19 @@ Compile all findings into discovery document:
 
 3. **Generate timestamp**:
    - Use ISO 8601 format: YYYY-MM-DDTHH:mm:ssZ
-   - Include in document content (not in filename)
+   - Include in filename and document
 
 4. **Save document**:
-   - Save to `MVP.md` at project root
+   - Save to `discovery/discovery-{timestamp}.md`
+   - Update `discovery/INDEX.md` with new entry:
+     - Link to discovery document
+     - Timestamp
+     - Summary of ideas and opportunities
 
 ## Output Format
 
 ```markdown
-# MVP Discovery
+# Discovery: {timestamp}
 
 ## Codebase Overview
 
@@ -230,7 +236,7 @@ Compile all findings into discovery document:
 ## Error Handling
 
 - **No Prime Export Found**: Check `context/` directory, list available exports, suggest running `/prime`
-- **MCP Server Unavailable**: Use Claude's built-in web search, inform user of limitations
+- **MCP Server Unavailable**: Use AI built-in web search, inform user of limitations
 - **Knowledge Base Empty**: Proceed with web search only, document limitation
 - **Web Search Fails**: Log error, continue with available context
 - **Document Generation Fails**: Log error, suggest manual creation

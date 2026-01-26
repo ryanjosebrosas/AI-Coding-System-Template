@@ -11,14 +11,6 @@ outputs:
 inputs: []
 ---
 
-## Universal Core Reference
-
-This command is defined in: `../../../commands/prime.md`
-
-This file provides Claude Code-specific prompt formatting and tool references.
-
----
-
 # Prime Command
 
 ## Purpose

@@ -71,7 +71,7 @@ Apply fixes for common issues:
 
 **2.1 Create missing .gitignore:**
 ```bash
-# Create with standard patterns for Node, Python, IDE, OS, Claude
+# Create with standard patterns for Node, Python, IDE, OS, AI Assistant
 ```
 
 **2.2 Create missing LICENSE:**
@@ -92,12 +92,7 @@ Apply fixes for common issues:
 - Add missing commands to command tables
 - Add completed features to status sections
 
-**2.5 Fix INDEX.md inconsistencies:**
-- Fix INDEX.md inconsistencies by calling update-index with regenerate=true for directories with mismatches
-- Automatically regenerate INDEX.md files that don't match actual directory contents
-- This ensures all INDEX.md files stay synchronized with the codebase structure
-
-**2.6 Update .claude/settings.local.json permissions:**
+**2.5 update .claude/settings.local.json permissions:**
 - Add permissions for commonly used git commands
 - Add permissions for Archon MCP tools used in project
 
@@ -129,9 +124,6 @@ Create comprehensive report showing:
 ### Documentation Updated
 - {file} - {changes made}
 
-### INDEX.md Auto-Fixed
-- {directory}/INDEX.md - {entries_added} added, {entries_removed} removed - Synchronized with directory contents
-
 ## Issues Requiring Manual Action
 
 ### {issue-description}
@@ -143,7 +135,6 @@ Create comprehensive report showing:
 
 - **Required Files**: {X}/{Y} present
 - **Documentation**: {X}/{Y} up-to-date
-- **INDEX.md Sync**: {X}/{Y} synchronized
 - **Artifacts**: {X} found and cleaned
 - **Overall**: {percentage}%
 
@@ -162,7 +153,6 @@ Found {count} issues:
 - {count} missing files (created)
 - {count} artifact files (deleted)
 - {count} outdated documentation (updated)
-- {count} INDEX.md files auto-fixed
 - {count} issues requiring manual review
 
 Changes staged. Review above or run 'git diff' to see details.
@@ -181,7 +171,7 @@ git commit -m "Codebase health check and cleanup
 - {summary of changes}
 
 Health Score: {percentage}%
-Co-Authored-By: Claude <noreply@anthropic.com>"
+Co-Authored-By: AI Assistant <noreply@ai-system.local>"
 ```
 
 ## Check Items Reference

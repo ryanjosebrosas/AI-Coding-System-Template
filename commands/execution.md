@@ -46,18 +46,7 @@ Load execution artifacts:
    - Call `health_check()` to verify server is available
    - If unavailable, stop and inform user
 
-4. **Load tasks with caching**:
-   - Call `find_tasks()` to fetch task list for the project
-   - **Cache**: Task queries automatically cached by project ID for faster subsequent calls
-   - Parse task list with dependencies and priorities
-   - Extract task order for sequential execution
-
-**Cache Benefits**:
-- **Faster responses**: Cached task queries return instantly
-- **Token efficiency**: Reduces redundant Archon MCP server calls
-- **Better performance**: Especially for repeated task status checks during execution
-
-**Expected Result**: Task plan and PRP loaded, Archon MCP verified, tasks loaded (from cache or fresh query).
+**Expected Result**: Task plan and PRP loaded, Archon MCP verified.
 
 ### Step 2: Initialize Execution
 
@@ -86,7 +75,6 @@ Execute each task following dependencies:
    - Check task dependencies are complete
    - Read task file from `execution/{order}-{task-slug}.md`
    - Mark task as "Doing" in Archon: `manage_task("update", task_id="...", status="doing")`
-     - **Cache**: Task updates batched to reduce server calls
    - Load task context from PRP
    - Execute task following PRP Implementation Blueprint and task file steps
 
@@ -99,7 +87,6 @@ Execute each task following dependencies:
 3. **Update Progress**:
    - Log task completion in `execution.md`
    - Mark task as "Done" in Archon: `manage_task("update", task_id="...", status="done")`
-     - **Cache**: Task status updates cached and flushed periodically
    - **Delete the task file** from `execution/` folder
    - Update STATUS.md with progress
    - Update `execution/INDEX.md` to reflect completion
@@ -107,7 +94,6 @@ Execute each task following dependencies:
 4. **Checkpoint State**:
    - Save checkpoint after each task completes
    - Store current state for resume capability
-   - **Cache**: Checkpoint data stored locally for fast resume
 
 **Task File Cleanup**:
 - When task completes successfully, delete `execution/{order}-{task-slug}.md`
@@ -200,21 +186,6 @@ Finalize execution:
 - **Task Execution Fails**: Log error, checkpoint state, suggest recovery
 - **Validation Fails**: Log validation errors, suggest fixes, ask user
 
-## MCP Tool Reference
-
-| Tool | Purpose | Parameters | Cache Behavior |
-|------|---------|------------|----------------|
-| `health_check()` | Verify Archon MCP availability | None | No caching (real-time status) |
-| `find_tasks()` | Fetch task list for project | project_id, task_id, filter_by, filter_value | Cached by project/filter (5 min TTL) |
-| `manage_task("update")` | Update task status | task_id, status, assignee, task_order | Batched updates, flushed periodically |
-| `rag_search_knowledge_base()` | Search knowledge base (if used) | query, source_id, match_count | Cached by query hash (1 hour TTL) |
-
-**Cache Performance Notes**:
-- Task queries (`find_tasks`) are cached to reduce redundant calls during execution
-- Task updates (`manage_task`) are batched and flushed to optimize performance
-- RAG searches (if PRP references knowledge base) benefit from existing cache
-- Cache invalidation happens automatically based on TTL or manual `/cache-invalidate`
-
 ## Checkpoint & Resume
 
 ### Checkpoint Format
@@ -254,8 +225,3 @@ Run validation as specified in PRP:
 - **Delete task files** from `execution/` folder after completion
 - When all task files deleted, feature is complete
 - Tasks exist in both Archon (source of truth) AND execution folder (local visibility)
-- **Archon MCP task caching**: Task queries cached by project ID (5 min TTL) to reduce redundant server calls
-- **Task update batching**: Status updates batched and flushed periodically for performance
-- **Cache management**: Use `/cache-invalidate --type mcp` to clear MCP cache if needed
-- **Cache stats**: Use `/cache-stats` to view cache hit rates and performance metrics
-- **Cache health**: Use `/cache-health` to check cache system status and TTL settings

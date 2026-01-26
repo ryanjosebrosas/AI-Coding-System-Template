@@ -1,44 +1,23 @@
-﻿# Context Index
+# Context Index
 
 ## Overview
 This directory contains codebase context exports from the Prime command. Each export is a complete snapshot of the codebase at a specific point in time, including file tree structure and file contents.
 
 ## Files
 
-### prime-2026-01-24T17-34-57Z.md
-- **Created**: 2026-01-24T17:34:57Z
-- **Description**: Complete codebase export from Prime command
-- **File Count**: 74 files
-- **Total Lines**: ~14246 lines
-- **Link**: [View Export](./prime-2026-01-24T17-34-57Z.md)
-
 ### prime-2026-01-24T17-32-08Z.md
-- **Created**: 2026-01-24T17:32:08Z
+- **Created**: 2026-01-24T17-32-08Z
 - **Description**: Complete codebase export from Prime command
-- **File Count**: 74 files
-- **Total Lines**: ~14239 lines
+- **File Count**: Unknown files
+- **Total Lines**: ~Total Lines: 14239 lines
 - **Link**: [View Export](./prime-2026-01-24T17-32-08Z.md)
 
-### prime-2026-01-24T20-31-03Z.md
-- **Created**: 2026-01-24T20:31:03Z
+### prime-2026-01-24T17-34-57Z.md
+- **Created**: 2026-01-24T17-34-57Z
 - **Description**: Complete codebase export from Prime command
-- **File Count**: 97 files
-- **Total Lines**: ~15,000 lines
-- **Link**: [View Export](./prime-2026-01-24T20-31-03Z.md)
-
-### prime-2026-01-24T18-21-11Z.md
-- **Created**: 2026-01-24T18:21:11Z
-- **Description**: Complete codebase export from Prime command
-- **File Count**: 27 files
-- **Total Lines**: ~3,500 lines
-- **Link**: [View Export](./prime-2026-01-24T18-21-11Z.md)
-
-### prime-2026-01-24T09-32-50Z.md
-- **Created**: 2026-01-24T09:32:50Z
-- **Description**: Complete codebase export from Prime command
-- **File Count**: 47 files
-- **Total Lines**: ~4,200 lines
-- **Link**: [View Export](./prime-2026-01-24T09-32-50Z.md)
+- **File Count**: Unknown files
+- **Total Lines**: ~Total Lines: 14246 lines
+- **Link**: [View Export](./prime-2026-01-24T17-34-57Z.md)
 
 ## Navigation
 - [Back to Root](../)

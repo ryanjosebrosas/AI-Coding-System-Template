@@ -15,14 +15,6 @@ inputs:
     required: true
 ---
 
-## Universal Core Reference
-
-This command is defined in: `../../../commands/development.md`
-
-This file provides Claude Code-specific prompt formatting and tool references.
-
----
-
 # Development Command
 
 ## Purpose
@@ -123,7 +115,7 @@ Analyze PRD requirements and generate a comprehensive Tech Spec (Technical Speci
 {Architecture description with principles and diagram}
 
 ## Technology Stack
-- **Claude Code**: {description}
+- **AI Coding System**: {description}
 - **Markdown**: {description}
 - **YAML Frontmatter**: {description}
 - **MCP**: {description}

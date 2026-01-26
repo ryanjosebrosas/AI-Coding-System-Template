@@ -19,14 +19,6 @@ dependencies:
   - STATUS.md may or may not exist (will create if missing)
 ---
 
-## Universal Core Reference
-
-This command is defined in: `../../../commands/update-status.md`
-
-This file provides Claude Code-specific prompt formatting and tool references.
-
----
-
 # Update STATUS Command
 
 ## Purpose

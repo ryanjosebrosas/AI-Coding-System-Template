@@ -12,14 +12,6 @@ inputs:
     required: false
 ---
 
-## Universal Core Reference
-
-This command is defined in: `../../../commands/workflow.md`
-
-This file provides Claude Code-specific prompt formatting and tool references.
-
----
-
 # Workflow Command
 
 ## Purpose

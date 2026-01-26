@@ -30,9 +30,8 @@ This is a markdown-based command system for orchestrating AI-assisted developmen
 | `/workflow {feature}` | Execute full workflow with resume support | All phases |
 | `/learn {topic}` | Search, digest, and store coding insights | Independent |
 | `/learn-health` | Check reference library health and statistics | Independent |
-| `/analytics` | Display usage analytics dashboard with productivity metrics | Utility |
 | `/check` | Comprehensive codebase health check and cleanup | Utility |
-| `/update-index` | Update directory INDEX.md files | Utility |
+| `/update-index` | Automatically updates INDEX.md files when directory contents change | Utility |
 | `/update-status` | Update feature STATUS.md tracking | Utility |
 
 ## Core Documents (Root Level)

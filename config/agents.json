@@ -1,0 +1,55 @@
+{
+  "agents": {
+    "claude": {
+      "name": "Claude (Anthropic)",
+      "token_limit": 200000,
+      "supports_mcp": true,
+      "supported_features": [
+        "markdown_commands",
+        "mcp_tools",
+        "file_operations",
+        "bash_execution"
+      ],
+      "context_loading_strategy": "full_with_selective_rag",
+      "mcp_tools": ["archon", "supabase"],
+      "adapter_directory": ".claude/"
+    },
+    "openai": {
+      "name": "OpenAI GPT (placeholder)",
+      "note": "Requirements mention 'Codex' but research indicates Codex was deprecated. This config for OpenAI API integration.",
+      "token_limit": 128000,
+      "supports_mcp": false,
+      "supported_features": [
+        "markdown_commands",
+        "file_operations"
+      ],
+      "context_loading_strategy": "chunked_priority",
+      "adapter_directory": ".openai/"
+    },
+    "gemini": {
+      "name": "Gemini (Google)",
+      "token_limit": 1000000,
+      "supports_mcp": false,
+      "supported_features": [
+        "markdown_commands",
+        "file_operations"
+      ],
+      "context_loading_strategy": "full_with_selective_rag",
+      "adapter_directory": ".gemini/"
+    }
+  },
+  "context_loading": {
+    "strategies": {
+      "full": "Load all Universal Core and adapter context",
+      "full_with_selective_rag": "Load all context, use RAG only for specific queries",
+      "chunked_priority": "Load critical sections first, load remaining as needed",
+      "priority_only": "Load only high-priority sections based on task"
+    },
+    "priority_sections": [
+      "AGENT.md",
+      "WORKFLOWS.md",
+      "commands/{current-task}.md",
+      "config/agents.json"
+    ]
+  }
+}

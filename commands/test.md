@@ -24,14 +24,6 @@ inputs:
     required: true
 ---
 
-## Universal Core Reference
-
-This command is defined in: `../../../commands/test.md`
-
-This file provides Claude Code-specific prompt formatting and tool references.
-
----
-
 # Test Command
 
 ## Purpose

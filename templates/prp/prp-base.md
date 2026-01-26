@@ -42,6 +42,8 @@ WHERE category = 'python' OR 'mcp' = ANY(tags);
 
 **Required Categories**: {list categories needed - e.g., python, mcp, react}
 **Optional Tags**: {list specific tags - e.g., async, hooks, testing}
+**Relevance Threshold (optional)**: {Minimum similarity score (0.0-1.0) for reference matching. Default: 0.7. Higher = more strict matching. Example: 0.8 for high-similarity matches only}
+**Max Tokens (optional)**: {Maximum tokens to load from references. Default: 8000. Helps control context size. Example: 5000 for lightweight context, 15000 for comprehensive context}
 
 **Standard Categories**:
 - python: Python patterns, libraries, best practices
@@ -53,6 +55,21 @@ WHERE category = 'python' OR 'mcp' = ANY(tags);
 - patterns: General design patterns
 - supabase: Supabase/database patterns
 - api: API design, REST, GraphQL
+
+**Usage Examples**:
+```markdown
+### Reference Library
+**Required Categories**: python, mcp
+**Optional Tags**: async, testing
+**Relevance Threshold**: 0.8
+**Max Tokens**: 5000
+```
+
+```markdown
+### Reference Library
+**Required Categories**: react, typescript
+**Max Tokens**: 10000
+```
 
 If no references are needed, leave this section empty or omit it.}
 
@@ -120,6 +137,22 @@ If no references are needed, leave this section empty or omit it.}
 - User scenarios to test
 - Test data requirements
 - Expected outcomes}
+
+## Known Gotchas
+
+### Common Pitfalls
+{Common issues to watch out for during implementation. Include:
+- Edge cases that may not be obvious
+- Integration quirks
+- Environment-specific issues
+- Testing gotchas}
+
+### Debugging Tips
+{Tips for debugging when things go wrong. Include:
+- Common failure modes
+- How to isolate issues
+- Useful debugging commands
+- Log locations and interpretation}
 
 ## Anti-Patterns
 

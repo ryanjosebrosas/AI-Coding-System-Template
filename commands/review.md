@@ -27,14 +27,6 @@ inputs:
     required: true
 ---
 
-## Universal Core Reference
-
-This command is defined in: `../../../commands/review.md`
-
-This file provides Claude Code-specific prompt formatting and tool references.
-
----
-
 # Review Command
 
 ## Purpose
