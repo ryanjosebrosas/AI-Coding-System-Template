@@ -8,6 +8,8 @@ outputs:
     description: "Discovery document with ideas, inspiration sources, needs analysis, and opportunities"
   - path: "discovery/INDEX.md"
     description: "Updated index of all discovery documents"
+  - path: "MVP.md"
+    description: "MVP definition at root based on discovery findings"
 inputs:
   - path: "context/prime-{timestamp}.md"
     description: "Most recent codebase export from Prime command"
@@ -166,10 +168,69 @@ Compile all findings into discovery document:
 
 4. **Save document**:
    - Save to `discovery/discovery-{timestamp}.md`
-   - Update `discovery/INDEX.md` with new entry:
-     - Link to discovery document
-     - Timestamp
-     - Summary of ideas and opportunities
+
+**Expected Result**: Discovery document created with all findings.
+
+### Step 6: Generate MVP.md
+
+**Objective**: Extract MVP definition from discovery document and save to project root.
+
+**Actions**:
+
+1. **Extract MVP recommendations**:
+   - Read the discovery document created in Step 5
+   - Locate the "### Recommended MVP Focus" section in the discovery content
+   - Extract the MVP title, goals, key features, and priorities
+
+2. **Create MVP.md structure**:
+   ```markdown
+   # MVP: {MVP Title}
+
+   ## Goals
+   {List of MVP goals from discovery recommendations}
+
+   ## Key Features
+   {Prioritized list of MVP features}
+
+   ## Success Criteria
+   {Definition of MVP success}
+
+   ## Architecture Recommendations
+   {Technical architecture suggestions from discovery}
+
+   ## Next Steps
+   {Recommended path forward after MVP}
+   ```
+
+3. **Save to root directory**:
+   - Save as `MVP.md` in project root (not in discovery/ folder)
+   - Ensure file is readable by `/planning` command as input
+   - Include timestamp reference to source discovery document
+
+**Expected Result**: MVP.md created at project root with extracted MVP definition.
+
+### Step 7: Update Discovery Index
+
+**Objective**: Maintain an up-to-date index of all discovery documents.
+
+**Actions**:
+
+1. **Read existing index**:
+   - Open `discovery/INDEX.md`
+   - If file doesn't exist, create it with standard header
+
+2. **Add new entry**:
+   - Append entry for new discovery document:
+     - Link: `[Discovery: {timestamp}](discovery-{timestamp}.md)`
+     - Timestamp: {ISO 8601 timestamp}
+     - Summary: Brief summary of key findings and opportunities
+
+3. **Format index**:
+   - Keep most recent discoveries at top
+   - Maintain consistent markdown format
+   - Include all relevant metadata
+
+**Expected Result**: Discovery index updated with new entry.
 
 ## Output Format
 
