@@ -211,6 +211,41 @@ Subtask-2-4 Status: COMPLETED ✓
 
 Next: Subtask-2-5 - Implement dashboard display: Format output as markdown tables and charts
 
+Subtask-2-5 Status: COMPLETED ✓
+- Enhanced: .claude/commands/analytics.md (Step 6)
+- Followed learn-health.md pattern for comprehensive dashboard formatting
+- Step 6 (Display Dashboard) expanded with:
+  * Trend Indicator Calculation: Percentage change with arrow indicators (↑↑, ↑, →, ↓), edge case handling
+  * Insight Generation: 'What's Working', 'Opportunities', 'Improvement Tips' with condition-based recommendations
+  * Overview Section: Markdown table with key metrics and trend indicators
+  * Task Completion Section: Status breakdown with visual bars ([████████░░░]), recent completions table
+  * Time Savings Section: Bullet list with overall savings, efficiency rate
+  * Feature Usage Section: Reference library table, commands used table
+  * Productivity Metrics Section: Metrics vs benchmarks with ✓/✗ indicators
+  * Insights & Recommendations Section: Emoji headers with actionable insights
+  * Footer: Export hint and timestamp
+  * Edge Case Handling: No data yet, data source unavailable, trend calculation errors
+  * Complete formatting example with all sections and sample data
+- Verification passed: Command includes formatted markdown output with tables
+- Committed: [commit hash]
+
+Next: Subtask-2-6 - Implement export functionality: Generate CSV/JSON files for download
+
+Subtask-2-6 Status: COMPLETED ✓
+- Enhanced: .claude/commands/analytics.md (Step 7)
+- Expanded Step 7 (Export Data) with comprehensive export functionality:
+  * Export Flag Checking: Conditional execution based on --export flag or user prompt
+  * Directory Creation: mkdir command with error handling (permission denied, disk space, invalid paths)
+  * CSV Export Generation: Detailed row structure with metric_type, metric_name, metric_value, timestamp format, task/project/savings/tokens/velocity/references metrics, proper CSV formatting with escaping, error handling for write failures
+  * JSON Export Generation: Complete nested JSON structure with export metadata, all metric categories (tasks/projects/time_savings/velocity/productivity/token_usage/references/recent_completions), pretty-print formatting, error handling for serialization failures
+  * File Verification: Existence checks, non-empty validation, file size calculation, human-readable formatting
+  * User Confirmation: Formatted markdown message with file paths, sizes, export date, metric count
+  * CSV and JSON format examples included
+- Verification passed: Command includes export step with file generation
+- Committed: 1e177b5
+
+Next: Phase 3 - Documentation & Integration (Subtasks 3-1 through 3-4)
+
 === FILES CREATED ===
 
 Context Files:
