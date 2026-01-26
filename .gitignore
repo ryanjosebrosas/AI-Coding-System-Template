@@ -74,3 +74,6 @@ Desktop.ini
 *.tmp
 *.temp
 .nul
+
+# Auto Claude data directory
+.auto-claude/

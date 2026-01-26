@@ -1,0 +1,39 @@
+{
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Read(./**)",
+      "Write(./**)",
+      "Edit(./**)",
+      "Glob(./**)",
+      "Grep(./**)",
+      "Read(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude\\worktrees\\tasks\\008-usage-analytics-dashboard/**)",
+      "Write(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude\\worktrees\\tasks\\008-usage-analytics-dashboard/**)",
+      "Edit(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude\\worktrees\\tasks\\008-usage-analytics-dashboard/**)",
+      "Glob(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude\\worktrees\\tasks\\008-usage-analytics-dashboard/**)",
+      "Grep(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude\\worktrees\\tasks\\008-usage-analytics-dashboard/**)",
+      "Read(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude\\worktrees\\tasks\\008-usage-analytics-dashboard\\.auto-claude\\specs\\008-usage-analytics-dashboard/**)",
+      "Write(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude\\worktrees\\tasks\\008-usage-analytics-dashboard\\.auto-claude\\specs\\008-usage-analytics-dashboard/**)",
+      "Edit(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude\\worktrees\\tasks\\008-usage-analytics-dashboard\\.auto-claude\\specs\\008-usage-analytics-dashboard/**)",
+      "Read(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude/**)",
+      "Write(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude/**)",
+      "Edit(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude/**)",
+      "Glob(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude/**)",
+      "Grep(C:\\Users\\Utopia\\Documents\\AI Coding Template\\.auto-claude/**)",
+      "Bash(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "mcp__context7__resolve-library-id(*)",
+      "mcp__context7__get-library-docs(*)",
+      "mcp__graphiti-memory__search_nodes(*)",
+      "mcp__graphiti-memory__search_facts(*)",
+      "mcp__graphiti-memory__add_episode(*)",
+      "mcp__graphiti-memory__get_episodes(*)",
+      "mcp__graphiti-memory__get_entity_edge(*)"
+    ]
+  }
+}
