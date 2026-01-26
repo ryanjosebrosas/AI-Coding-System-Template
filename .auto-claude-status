@@ -1,25 +1,25 @@
 {
   "active": true,
   "spec": "008-usage-analytics-dashboard",
-  "state": "planning",
+  "state": "building",
   "subtasks": {
-    "completed": 0,
-    "total": 0,
+    "completed": 2,
+    "total": 16,
     "in_progress": 1,
     "failed": 0
   },
   "phase": {
-    "current": "Data Model & Migration",
+    "current": "Analytics Command",
     "id": null,
-    "total": 2
+    "total": 6
   },
   "workers": {
     "active": 0,
     "max": 1
   },
   "session": {
-    "number": 2,
+    "number": 4,
     "started_at": "2026-01-26T18:56:34.635944"
   },
-  "last_update": "2026-01-26T19:02:06.889993"
+  "last_update": "2026-01-26T19:10:20.826699"
 }
