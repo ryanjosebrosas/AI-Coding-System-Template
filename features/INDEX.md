@@ -4,18 +4,13 @@
 
 | Feature | Phase | Status |
 |---------|-------|--------|
-| [interactive-workflow-enhancement](./interactive-workflow-enhancement/) | Complete | All 11 tasks done |
+| *(No active features)* | - | Run `/workflow {feature}` to start a new feature |
 
-## Feature Summary
+## Completed Features
 
-### Interactive Workflow Enhancement
-Transform the AI Coding Workflow System from automated document generator into a collaborative partner with:
-- Interactive PRD generation with probing questions
-- Interactive Tech Spec generation with tech stack challenges
-- Inspo repo integration for referencing GitHub projects
-- Skill format migration for improved interactivity
-
-**Target Personas**: Solo Builder, Technical Lead, Starting Developer
+| Feature | Completed | Summary |
+|---------|-----------|---------|
+| Interactive Workflow Enhancement | 2026-01-29 | Added conversational probing, inspo repo support, skill migration |
 
 ## Navigation
 
