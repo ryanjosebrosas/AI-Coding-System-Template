@@ -77,3 +77,7 @@ Desktop.ini
 
 # Auto Claude data directory
 .auto-claude/
+.auto-claude-*
+
+# Claude settings with credentials
+.claude/...settings.json
