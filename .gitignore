@@ -70,6 +70,9 @@ Desktop.ini
 .claude/settings.local.json
 .claude/sessions/
 
+# Smart Context Retrieval
+.prime-cache.json
+
 # Temporary
 *.tmp
 *.temp

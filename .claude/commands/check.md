@@ -44,6 +44,11 @@ Run systematic checks across the codebase:
 - If more than 3, flag old files for cleanup
 - Prime files are large (10,000+ tokens) - cleanup saves space
 
+**1.5 Check for cache and discovery files to clean:**
+- `.prime-cache.json` - Prime cache (delete to force fresh prime)
+- `discovery/*.md` (except INDEX.md) - Old discovery documents
+- `/check` is typically run when finishing a project, so these can be cleaned
+
 **1.5 Check documentation consistency:**
 - Root `INDEX.md` - Should list all commands
 - `features/INDEX.md` - Should reflect current feature statuses
@@ -84,6 +89,8 @@ Apply fixes for common issues:
 # Remove nul, .DS_Store, Thumbs.db, *.tmp, *.temp
 # Remove PRD.md, MVP.md, TECH SPEC.md if project is complete
 # Remove old context/prime-*.md files (keep latest 2-3)
+# Remove .prime-cache.json (reset prime cache)
+# Remove discovery/*.md except INDEX.md (clean old discoveries)
 ```
 
 **2.4 Update outdated INDEX.md entries:**
@@ -209,6 +216,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 | Pattern | Description | Action |
 |---------|-------------|--------|
 | `context/prime-*.md` | Context export files (large!) | Keep latest 2-3, delete rest |
+| `.prime-cache.json` | Prime cache for diff output | Delete (reset cache) |
+| `discovery/*.md` | Discovery documents | Delete all except INDEX.md |
 | `nul` | Windows artifact (45 bytes) | Delete |
 | `.DS_Store` | macOS artifact | Delete |
 | `Thumbs.db` | Windows thumbnail cache | Delete |

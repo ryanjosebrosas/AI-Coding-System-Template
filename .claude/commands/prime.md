@@ -19,6 +19,20 @@ inputs: []
 
 Export the entire codebase for context gathering. This command traverses the project directory, respects ignore patterns, and generates a structured markdown export with tree structure and file contents. This provides comprehensive context for AI assistants to understand the codebase structure, patterns, and conventions.
 
+## Command Flags
+
+| Flag | Description |
+|------|-------------|
+| `--full` | Bypass cache and output all files with full content (ignores .prime-cache.json) |
+| `--reset` | Delete .prime-cache.json before running (forces fresh cache) |
+| `--debug` | Show language detection details and boost weight application |
+
+**Usage Examples**:
+- `/prime` - Diff-based export (uses cache, shows changed files in full, unchanged as summary)
+- `/prime --full` - Full export (ignores cache, all files with full content)
+- `/prime --reset` - Clear cache and run fresh (like first-time prime)
+- `/prime --reset --full` - Clear cache and full export
+
 **Parallel File Reading**: Files are processed in parallel batches (20-50 files per batch) using background task notation for concurrent reads, reducing wall-clock time by 3-5x compared to sequential processing.
 
 **Incremental Indexing**: On subsequent runs, the command detects changed files using git diff and only processes new, modified, or deleted files, significantly reducing execution time for large codebases.
@@ -27,7 +41,69 @@ Export the entire codebase for context gathering. This command traverses the pro
 
 ## Execution Steps
 
-### Step 0: Detect Export Mode (Full vs Incremental)
+### Step 0a: Detect Project Language
+
+Before processing files, detect the primary project language for smart context filtering:
+
+1. **Check for file markers** (priority order):
+   - `requirements.txt` OR `pyproject.toml` OR `setup.py` OR `Pipfile` → **Python** (confidence: 0.95)
+   - `package.json` AND `tsconfig.json` → **TypeScript** (confidence: 0.95)
+   - `package.json` (without tsconfig.json) → **JavaScript** (confidence: 0.85)
+   - `go.mod` → **Go** (confidence: 0.95)
+   - `Cargo.toml` → **Rust** (confidence: 0.95)
+   - `pom.xml` OR `build.gradle` → **Java** (confidence: 0.90)
+   - `*.csproj` OR `*.sln` → **C#** (confidence: 0.90)
+
+2. **Store detection result**:
+   ```json
+   {
+     "detected_language": "python",
+     "confidence": 0.95,
+     "detection_method": "file_marker",
+     "markers_found": ["requirements.txt", "pyproject.toml"],
+     "detected_at": "ISO8601 timestamp"
+   }
+   ```
+
+3. **Update `.smart-context-config.json`** with detected language (if smart context enabled)
+
+4. **Log detection**: "Language detected: {language} (confidence: {confidence}, method: {method})"
+
+5. **If no markers found**: Use extension fallback:
+   - Count files by extension using git ls-files or directory traversal
+   - Map extensions to languages:
+     - `.py` → Python
+     - `.ts`, `.tsx` → TypeScript
+     - `.js`, `.jsx` → JavaScript
+     - `.go` → Go
+     - `.rs` → Rust
+     - `.java` → Java
+     - `.cs` → C#
+     - `.rb` → Ruby
+     - `.php` → PHP
+   - Calculate percentage for each language
+   - Primary language = highest percentage IF >= 40% threshold
+   - Store result with detection_method: "extension_analysis"
+   - Example result:
+     ```json
+     {
+       "detected_language": "typescript",
+       "confidence": 0.75,
+       "detection_method": "extension_analysis",
+       "markers_found": [],
+       "extension_stats": {
+         "ts": 45,
+         "tsx": 20,
+         "js": 10,
+         "json": 15,
+         "md": 10
+       },
+       "detected_at": "ISO8601 timestamp"
+     }
+     ```
+   - If no language reaches 40% threshold, set detected_language to "mixed" with confidence 0.5
+
+### Step 0b: Detect Export Mode (Full vs Incremental)
 - Check if `context/.prime-state.json` exists from previous export
 - If no state file exists: **Full Export Mode** - process all files
 - If state file exists: **Incremental Export Mode** - detect changes
@@ -52,8 +128,8 @@ Export the entire codebase for context gathering. This command traverses the pro
   - Compare current hash with cached hash to verify actual changes
 - **Cache Invalidation on File Modifications**:
   - **For Incremental Mode**:
-    - Get list of changed files from git diff (from Step 0)
-    - Get list of deleted files from git diff (from Step 0)
+    - Get list of changed files from git diff (from Step 0b)
+    - Get list of deleted files from git diff (from Step 0b)
     - For each changed file:
       - Compute current SHA-256 hash of file content
       - Compare with cached hash in `performance_cache.json` file_hashes section
@@ -293,7 +369,41 @@ Export the entire codebase for context gathering. This command traverses the pro
 - Dependencies: {list if detectable}
 ```
 
-**Incremental Export:**
+**Diff-Based Export (using .prime-cache.json):**
+```markdown
+# Codebase Export: {timestamp}
+
+## Export Mode
+- Type: Diff-Based
+- Cache: .prime-cache.json
+- Changed Files: {count}
+- Unchanged Files: {count}
+
+## Changed Files (Full Detail)
+
+### {file-path} [CHANGED]
+```{language}
+{full file contents}
+```
+
+## Unchanged Files (Summary Only)
+
+| File | Size | Last Modified |
+|------|------|---------------|
+| src/utils.py | 2.3 KB | 2026-01-20 |
+| src/config.py | 1.1 KB | 2026-01-15 |
+| ... | ... | ... |
+
+**{X} unchanged files** (total {Y} KB) - use --full flag for complete content
+
+## Index
+- Total Files: {count}
+- Changed: {count} ({percentage}%)
+- Unchanged: {count}
+- Token Savings: ~{percentage}% vs full export
+```
+
+**Incremental Export (using git):**
 ```markdown
 # Codebase Export: {timestamp}
 
@@ -353,6 +463,13 @@ Export the entire codebase for context gathering. This command traverses the pro
   "last_export_file": "prime-2025-01-27T10:30:00Z.md",
   "total_files": 1250,
   "export_mode": "full",
+  "language_detection": {
+    "detected_language": "python",
+    "confidence": 0.95,
+    "detection_method": "file_marker",
+    "markers_found": ["requirements.txt", "pyproject.toml"],
+    "detected_at": "2025-01-27T10:30:00Z"
+  },
   "file_hashes": {
     "src/index.ts": "a1b2c3d4e5f6...",
     "README.md": "f6e5d4c3b2a1...",
@@ -462,6 +579,47 @@ The performance cache stores file contents to avoid redundant disk reads on subs
 - Hash-based: If file hash changes, cache entry is invalidated
 - TTL-based: If `current_time > cached_at + ttl_hours`, cache entry expires
 - Manual: Delete `performance_cache.json` to clear all cached data
+
+## Prime Cache Format (`.prime-cache.json`)
+
+Simplified cache file for diff-based output (separate from performance_cache.json):
+
+```json
+{
+  "version": "1.0",
+  "created_at": "2026-01-29T00:00:00Z",
+  "updated_at": "2026-01-29T01:00:00Z",
+  "project_root": "C:/Users/Project",
+  "file_count": 45,
+  "files": {
+    "src/main.py": {
+      "hash": "sha256:abc123...",
+      "size": 1234,
+      "modified": "2026-01-29T00:30:00Z"
+    },
+    "README.md": {
+      "hash": "sha256:def456...",
+      "size": 500,
+      "modified": "2026-01-28T12:00:00Z"
+    }
+  }
+}
+```
+
+**Cache Management**:
+- **Create**: First prime run creates `.prime-cache.json` with all file hashes
+- **Load**: Subsequent runs load cache and compare current file hashes
+- **Validate**: Check cache version and project_root match
+- **Corruption**: If cache is invalid JSON or wrong version, auto-rebuild with warning
+- **Changed Files**: Hash mismatch → file changed → include full content in output
+- **Unchanged Files**: Hash match → file unchanged → include summary only
+
+**Cache vs State File**:
+- `.prime-cache.json` - Simple hash cache for diff output (user-facing)
+- `.prime-state.json` - Full state with commit tracking, relevance scores (internal)
+- `performance_cache.json` - File content cache for performance optimization (internal)
+
+---
 
 ## Notes
 

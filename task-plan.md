@@ -30,8 +30,9 @@
 ### Phase 1: Language Detection + Boost Weights (~6h)
 
 1. **Task 100**: Add boost weight configuration to settings
-   - Add `smart_context` section to `.claude/settings.local.json`
+   - Create `.smart-context-config.json` (settings.local.json doesn't allow custom fields)
    - Define boost weights and language-source mapping
+   - Document in CLAUDE.md
 
 2. **Task 95**: Implement language detection from file markers
    - Scan for: requirements.txt, package.json, go.mod, Cargo.toml

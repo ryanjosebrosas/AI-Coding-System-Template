@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "enabled": true,
+  "boost_weights": {
+    "matching": 1.5,
+    "general": 1.0,
+    "non_matching": 0.7
+  },
+  "language_sources": {
+    "python": ["c0e629a894699314"],
+    "typescript": ["f3246532dd189ef4"],
+    "general": [
+      "0475da390fe5f210",
+      "b6fcee627ca78458",
+      "47d0203a7b9d285a",
+      "a13ccce8cd326373"
+    ]
+  },
+  "language_markers": {
+    "python": ["requirements.txt", "pyproject.toml", "setup.py", "Pipfile"],
+    "typescript": ["package.json", "tsconfig.json"],
+    "javascript": ["package.json"],
+    "go": ["go.mod"],
+    "rust": ["Cargo.toml"]
+  },
+  "extension_threshold": 0.4,
+  "debug": false
+}
