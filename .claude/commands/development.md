@@ -22,11 +22,17 @@ inputs:
 
 ## Purpose
 
-Analyze PRD requirements and generate a comprehensive Tech Spec (Technical Specification). This command loads the PRD, uses RAG knowledge base and web MCP servers to research architecture patterns and tech stacks, recommends technology stack (backend, frontend, MCP servers, AI frameworks, models, agent architecture), and generates detailed tech spec with system architecture, technology stack, command structure, file system structure, data models, MCP integration, command implementation, error handling, performance, and security.
+Analyze PRD requirements and generate a comprehensive Tech Spec through **interactive conversation**. This command engages you in a probing session - challenging your tech stack choices, questioning architecture decisions, and suggesting alternatives - before generating the Tech Spec. The goal is to ensure technical decisions are deliberate, not default.
 
 **When to use**: Use this command after Planning phase, when you have a PRD and need technical specifications to guide implementation.
 
-**What it solves**: This command addresses the need to translate requirements into technical blueprints with architecture and technology recommendations.
+**What it solves**: This command addresses the need to translate requirements into technical blueprints with architecture and technology recommendations. The interactive probing ensures technical decisions are justified and appropriate for your constraints.
+
+**Interactive Approach**: Instead of just researching and recommending, this command:
+1. Asks about your tech stack preferences and constraints
+2. Challenges your choices ("Why this stack?")
+3. Suggests alternatives via web search when appropriate
+4. Validates decisions before generating the Tech Spec
 
 ## Prerequisites
 
@@ -46,6 +52,92 @@ Analyze PRD requirements and generate a comprehensive Tech Spec (Technical Speci
 3. Extract: Technical needs, integration needs, data needs
 
 **Expected Result**: PRD loaded and technical requirements extracted.
+
+### Step 1.5: Interactive Probing (Technical Decisions)
+
+**Objective**: Challenge and validate technical decisions through conversation. Ask one question at a time, follow up based on answers, challenge assumptions.
+
+**Probing Flow**:
+```
+INIT → Load PRD context
+PROBE → Ask about tech choice
+CHALLENGE → "Why that choice?"
+SUGGEST → Offer alternatives (web search)
+VALIDATE → User defends or accepts
+REPEAT → Until all decisions validated
+CONFIRM → Summarize tech decisions
+GENERATE → Create Tech Spec
+```
+
+**Probing Questions** (ask one at a time, challenge each answer):
+
+1. **Tech Stack Preferences** (start here):
+   - "What tech stack are you considering? (frontend, backend, database)"
+   - Challenge: "Why [technology X]? What problem does it solve that alternatives don't?"
+   - If no preference: "Let me research options based on your requirements and suggest some..."
+
+2. **Architecture Pattern** (after stack):
+   - "What architecture pattern fits this feature? (monolith, microservices, serverless, etc.)"
+   - Challenge if mismatch: "You mentioned [constraint] but chose [architecture]. How does that work together?"
+   - Suggest: "Based on [PRD requirements], have you considered [alternative]?"
+
+3. **Constraints** (after architecture):
+   - "What constraints should I know about? (team skills, budget, timeline, existing infrastructure)"
+   - Follow-up: "How does your tech choice [X] fit with [constraint Y]?"
+   - Challenge: "Your timeline is [Z], but [technology] has a steep learning curve. Is that factored in?"
+
+4. **Keep It Simple Check**:
+   - "Is there a simpler approach that would work? What's the minimum viable tech stack?"
+   - Challenge over-engineering: "Do you really need [complex solution] or would [simple solution] work?"
+
+5. **Inspo Repo for Structure** (optional):
+   - "Do you have an inspo repo we should reference for architecture or file structure?"
+   - **If yes**: Run inspo repo analyzer (see `.claude/utils/inspo-repo-analyzer.md`)
+     ```bash
+     gh repo view owner/repo --json name,description,languages
+     gh api repos/owner/repo/contents
+     gh api repos/owner/repo/contents/package.json --jq '.content' | base64 -d
+     ```
+   - Present analysis and ask: "What aspects do you want to adopt?"
+     - **File structure** → Use as template in Tech Spec file structure section
+     - **Tech stack** → Validate against user's choices, suggest if matches requirements
+     - **Architecture patterns** → Incorporate in System Architecture section
+   - **If no**: Proceed without, or ask about similar products/tools
+   - Store selected aspects for Tech Spec generation
+
+**Challenge Logic**:
+- **User picks popular/default stack**: "Why [X] over [Y]? Is this based on familiarity or requirements?"
+- **User picks complex solution**: "This seems complex for the requirements. Would [simpler alternative] work?"
+- **User says 'I don't know'**: "Let me research based on your PRD requirements and suggest options..."
+- **User defends choice well**: Acknowledge and move on: "Good reasoning. Let's proceed with [choice]."
+
+**Web Search for Alternatives**:
+When user picks a stack, optionally search for alternatives:
+```
+"You chose [stack]. Let me check if there are better fits for [specific requirement]..."
+Search: "[requirement] tech stack comparison 2026"
+Present: "Here are some alternatives: [A], [B], [C]. Still want to proceed with [original]?"
+```
+
+**Confirmation Before Generation**:
+After all technical decisions are validated:
+```
+"Let me confirm the technical decisions:
+
+- **Frontend**: [choice] - Reason: [user's reasoning]
+- **Backend**: [choice] - Reason: [user's reasoning]
+- **Database**: [choice] - Reason: [user's reasoning]
+- **Architecture**: [pattern] - Reason: [user's reasoning]
+- **Constraints**: [list]
+- **Inspo**: [repo or none]
+
+These decisions will drive the Tech Spec. Any changes before I generate?"
+```
+
+If user confirms → proceed to research and generation
+If user changes → update and re-confirm
+
+**Expected Result**: Technical decisions validated through conversation, user owns the choices.
 
 ### Step 2: Research Architecture Patterns (RAG)
 

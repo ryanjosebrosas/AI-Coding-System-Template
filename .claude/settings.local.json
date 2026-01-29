@@ -38,7 +38,10 @@
       "Bash(git log:*)",
       "Bash(git config:*)",
       "Bash(git reset:*)",
-      "Bash(git rev-parse:*)"
+      "Bash(git rev-parse:*)",
+      "WebFetch(domain:www.anthropic.com)",
+      "Bash(if not exist \"C:\\\\Users\\\\Utopia\\\\Documents\\\\AI Coding Template\\\\context\" mkdir \"C:\\\\Users\\\\Utopia\\\\Documents\\\\AI Coding Template\\\\context\")",
+      "mcp__archon__rag_read_full_page"
     ]
   },
   "enableAllProjectMcpServers": true,

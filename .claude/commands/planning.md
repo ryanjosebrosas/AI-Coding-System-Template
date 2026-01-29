@@ -21,11 +21,17 @@ inputs:
 
 ## Purpose
 
-Transform discovery insights into a comprehensive PRD (Product Requirements Document). This command loads the discovery document, extracts the feature name, creates the feature directory structure, researches PRD templates using RAG knowledge base and web MCP servers, generates PRD with features, user stories, acceptance criteria, and technical requirements, validates the PRD against quality standards, and updates indexes and STATUS.md.
+Transform discovery insights into a comprehensive PRD (Product Requirements Document) through **interactive conversation**. This command engages you in a conversational probing session - asking questions one at a time, following up based on your answers, and challenging assumptions - before generating the PRD. The goal is to make AI your collaborative partner in requirements definition, not just a document generator.
 
 **When to use**: Use this command after Discovery phase, when you have identified opportunities and want to create formal requirements for a feature.
 
-**What it solves**: This command addresses the need to transform exploratory findings into actionable, structured requirements that guide implementation.
+**What it solves**: This command addresses the need to transform exploratory findings into actionable, structured requirements that guide implementation. The interactive probing ensures the PRD reflects your actual vision, not AI assumptions.
+
+**Interactive Approach**: Instead of immediately generating a PRD, this command:
+1. Asks probing questions about personas, features, success criteria
+2. Follows up based on your answers (challenges vague responses)
+3. Summarizes understanding and confirms before generating
+4. Results in a PRD that captures your true intent
 
 ## Prerequisites
 
@@ -47,6 +53,81 @@ Transform discovery insights into a comprehensive PRD (Product Requirements Docu
 3. Extract key information: Opportunities, Ideas, Needs, Inspiration sources
 
 **Expected Result**: Discovery document loaded and parsed.
+
+### Step 1.5: Interactive Probing (Conversational Flow)
+
+**Objective**: Engage user in conversation to gather context before PRD generation. Ask one question at a time, follow up based on answers, challenge assumptions.
+
+**Probing Flow**:
+```
+INIT → Load context (discovery, MVP)
+PROBE → Ask one question
+LISTEN → Receive response
+ANALYZE → Follow-up or next topic?
+REPEAT → Until sufficient context
+CONFIRM → Summarize understanding
+GENERATE → Create PRD
+```
+
+**Probing Questions** (ask one at a time, follow up based on answers):
+
+1. **Personas** (start here):
+   - "Who will use this feature? Describe 2-3 user types."
+   - Follow-up if vague: "What's their technical level? What problems do they face daily?"
+   - Follow-up if generic: "Can you give a specific example of a user and their workflow?"
+
+2. **Features** (after personas):
+   - "What are the 3-5 key features this needs?"
+   - Follow-up: "Which of these is the absolute must-have vs nice-to-have?"
+   - Challenge: "Why [feature X]? What problem does it solve for [persona Y]?"
+
+3. **Success Criteria** (after features):
+   - "What does success look like? How will you know this feature is working?"
+   - Follow-up if vague: "Can you give me a specific, measurable outcome?"
+   - Follow-up: "How will [persona] know the feature is helping them?"
+
+4. **Constraints** (after success):
+   - "Are there any constraints? Timeline, team size, tech limitations?"
+   - Follow-up: "What's off the table? What should we avoid?"
+
+5. **Inspo Repo** (optional, ask at end):
+   - "Do you have an inspiration repo we should reference? (GitHub URL)"
+   - **If yes**: Run inspo repo analyzer (see `.claude/utils/inspo-repo-analyzer.md`)
+     ```bash
+     gh repo view owner/repo --json name,description,languages
+     gh api repos/owner/repo/contents
+     ```
+   - Present analysis and ask: "What aspects do you want to adopt?"
+     - File structure → Inform feature organization
+     - Tech stack → Reference in Technical Requirements
+     - Architecture patterns → Include in PRD scope
+   - **If no**: "That's fine. Is there any existing product or tool that does something similar?"
+   - Store selected aspects for PRD generation
+
+**Follow-Up Logic**:
+- **Vague answer** ("it should be good", "whatever works"): "Could you be more specific? For example, what does 'good' mean for [persona]?"
+- **Generic answer** ("all users"): "Let's narrow it down. Who uses this most? Give me one specific user type."
+- **New area revealed**: Probe deeper with 1-2 follow-up questions
+- **Sufficient detail**: Acknowledge and move to next question
+
+**Confirmation Before Generation**:
+After all questions, summarize:
+```
+"Let me confirm what I've gathered:
+
+- **Personas**: [list personas with descriptions]
+- **Key Features**: [prioritized list]
+- **Success Criteria**: [specific, measurable criteria]
+- **Constraints**: [timeline, team, tech]
+- **Inspo**: [repo or similar products]
+
+Does this capture your vision? Any adjustments before I generate the PRD?"
+```
+
+If user says yes → proceed to PRD generation
+If user adjusts → update understanding, re-confirm
+
+**Expected Result**: Sufficient context gathered through conversation, user confirms understanding.
 
 ### Step 2: Extract Feature Name
 

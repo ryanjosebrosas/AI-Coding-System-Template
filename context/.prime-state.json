@@ -1,0 +1,51 @@
+{
+  "last_export_commit": "8ff96ad639f677b05a0563958fbde3949de5785d",
+  "last_export_timestamp": "2026-01-29T00:00:00Z",
+  "last_export_file": "prime-2026-01-29T00-00-00Z.md",
+  "total_files": 23,
+  "export_mode": "full",
+  "language_detection": {
+    "detected_language": "mixed",
+    "confidence": 0.50,
+    "detection_method": "extension_analysis",
+    "markers_found": [],
+    "extension_stats": {
+      "md": 18,
+      "json": 3,
+      "other": 2
+    },
+    "detected_at": "2026-01-29T00:00:00Z"
+  },
+  "file_hashes": {
+    ".claude/commands/check.md": "auto-generated",
+    ".claude/commands/development.md": "auto-generated",
+    ".claude/commands/discovery.md": "auto-generated",
+    ".claude/commands/execution.md": "auto-generated",
+    ".claude/commands/learn-health.md": "auto-generated",
+    ".claude/commands/learn.md": "auto-generated",
+    ".claude/commands/planning.md": "auto-generated",
+    ".claude/commands/prime.md": "auto-generated",
+    ".claude/commands/review.md": "auto-generated",
+    ".claude/commands/task-planning.md": "auto-generated",
+    ".claude/commands/test.md": "auto-generated",
+    ".claude/commands/workflow.md": "auto-generated",
+    ".claude/settings.local.json": "auto-generated",
+    ".gitignore": "auto-generated",
+    ".mcp.json": "auto-generated",
+    ".smart-context-config.json": "auto-generated",
+    "AGENT.md": "auto-generated",
+    "CLAUDE.md": "auto-generated",
+    "INDEX.md": "auto-generated",
+    "LICENSE": "auto-generated",
+    "README.md": "auto-generated",
+    "discovery/INDEX.md": "auto-generated",
+    "docs/contextual-embedding-guide.md": "auto-generated"
+  },
+  "relevance_summary": {
+    "high_relevance": 5,
+    "medium_relevance": 15,
+    "low_relevance": 3,
+    "average_score": 55.0
+  },
+  "previous_exports": []
+}

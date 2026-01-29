@@ -2,7 +2,10 @@
 
 ## Documents
 
-*No active discovery documents. Run `/discovery` to start a new exploration.*
+| Document | Date | Summary |
+|----------|------|---------|
+| *(No active discoveries)* | - | Run `/discovery` to start exploring opportunities |
 
 ## Navigation
+
 - [Back to Root](../)
