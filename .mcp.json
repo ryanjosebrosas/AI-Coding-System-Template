@@ -7,6 +7,10 @@
     "archon": {
       "type": "http",
       "url": "https://mcp-api.ryanjosebrosas.xyz/mcp"
+    },
+    "archon-local": {
+      "type": "http",
+      "url": "http://159.195.45.47:8051/mcp"
     }
   }
 }

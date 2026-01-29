@@ -2,10 +2,13 @@
 name: Development
 description: "Analyze PRD requirements and generate comprehensive Tech Spec with technology stack recommendations"
 phase: development
-dependencies: [planning]
+dependencies:
+  - planning
 outputs:
   - path: "TECH-SPEC.md"
     description: "Technical Specification at root with system architecture, technology stack, implementation details, and recommendations"
+  - path: "TECH-SPEC-validation-report.md"
+    description: "Quality validation report with scores, issues, and improvement suggestions"
 inputs:
   - path: "PRD.md"
     description: "Product Requirements Document at root"
@@ -13,14 +16,6 @@ inputs:
   - path: "MVP.md"
     description: "MVP definition at root"
     required: true
----
-
-## Universal Core Reference
-
-This command is defined in: `../../../commands/development.md`
-
-This file provides Claude Code-specific prompt formatting and tool references.
-
 ---
 
 # Development Command
@@ -105,9 +100,51 @@ Analyze PRD requirements and generate a comprehensive Tech Spec (Technical Speci
 
 **Actions**:
 1. Save to `features/{feature-name}/tech-spec.md`
-2. Update STATUS.md: add tech-spec.md artifact, mark Development complete, set current to Task Planning
+2. Update STATUS.md: add tech-spec.md artifact
+3. Do NOT mark Development complete yet (validation required first)
 
-**Expected Result**: Tech spec saved, status updated.
+**Expected Result**: Tech spec saved, status updated with artifact added.
+
+### Step 7: Validate Generated Tech Spec
+
+**Objective**: Ensure the generated Tech Spec meets quality standards before marking Development complete.
+
+**Actions**:
+1. Call the `/validate` command with the generated Tech Spec:
+   - Artifact path: `features/{feature-name}/tech-spec.md`
+   - Artifact type: TECH-SPEC
+2. Wait for validation results
+3. Handle validation outcome:
+   - **If PASS**:
+     - Display success message with quality score
+     - Update STATUS.md: mark Development complete, set current to Task Planning
+     - Proceed to Task Planning phase
+   - **If FAIL**:
+     - Display validation failure with critical issues
+     - Show immediate action items from validation report
+     - Ask user to choose:
+       1. Fix issues and re-validate
+       2. Override and proceed (requires acknowledgment)
+     - If user chooses to fix → await corrections, then re-run validation
+     - If user chooses override → require explicit acknowledgment phrase
+   - **If CONDITIONAL**:
+     - Display validation conditional with high priority issues
+     - Show recommended improvements
+     - Ask user to choose:
+       1. Fix issues and re-validate (recommended)
+       2. Override and proceed
+     - If user chooses to fix → await corrections, then re-run validation
+     - If user chooses override → proceed with warning
+4. Document validation outcome in STATUS.md:
+   - Add validation status: PASS/FAIL/CONDITIONAL/OVERRIDE
+   - Add quality score
+   - Add validation report path: `features/{feature-name}/tech-spec-validation-report.md`
+
+**Expected Result**: Tech spec validated, quality ensured, STATUS.md updated with validation outcome, Development marked complete (or override acknowledged).
+
+**Error Handling**:
+- If validation command fails → log error, mark validation as FAILED, prompt user to run `/validate` manually
+- If validation framework incomplete → warn user, mark Development complete with note to validate later
 
 ## Output Format
 
@@ -172,6 +209,24 @@ Analyze PRD requirements and generate a comprehensive Tech Spec (Technical Speci
 - Use template with PRD content
 - Generate partial tech spec
 
+### Validation Fails
+- Display validation failure with critical issues
+- Show immediate action items from validation report
+- Prompt user to fix issues or override with acknowledgment
+- If user fixes issues → re-run validation
+- If user overrides → require explicit acknowledgment: "I acknowledge the quality issues and accept responsibility"
+
+### Validation Conditional
+- Display validation conditional with high priority issues
+- Show recommended improvements
+- Prompt user to fix issues (recommended) or override
+- Document override decision in STATUS.md if user proceeds
+
+### Validation Framework Unavailable
+- Warning: "Validation framework unavailable. Proceeding without validation."
+- Mark Development complete with note: "Validation pending - run /validate manually"
+- Advise user to run `/validate features/{feature-name}/tech-spec.md` when framework is available
+
 ## MCP Tool Reference
 
 | Tool | Purpose | Query |
@@ -181,6 +236,7 @@ Analyze PRD requirements and generate a comprehensive Tech Spec (Technical Speci
 | `web_search_prime_search()` | Stack recommendations | "tech stack recommendations AI agents" |
 | `web_reader_read()` | Read documentation | URL from search |
 | `zread_read()` | Advanced reading | URL from search |
+| `/validate` command | Validate tech spec quality | `features/{feature-name}/tech-spec.md` |
 
 ## Examples
 
@@ -191,6 +247,14 @@ Analyze PRD requirements and generate a comprehensive Tech Spec (Technical Speci
 - Researches architecture patterns and tech stacks
 - Generates tech spec with system architecture, technology stack, MCP integration
 - Saves to `features/ai-coding-workflow-system/tech-spec.md`
+- Validates tech spec quality
+- If validation passes:
+  - Displays: "✅ Validation passed! Quality Score: 85/100"
+  - Marks Development complete in STATUS.md
+- If validation fails:
+  - Displays: "❌ Validation failed. Critical issues must be addressed."
+  - Shows immediate action items
+  - Prompts for fix or override
 
 ## Notes
 
@@ -200,14 +264,28 @@ Analyze PRD requirements and generate a comprehensive Tech Spec (Technical Speci
 - MCP integration should be documented clearly
 - Error handling and performance considered from start
 - Security measures documented
+- **Validation is automatic**: After generating Tech Spec, the `/validate` command runs automatically to ensure quality
+- **Validation enforces YAGNI/KISS**: Tech specs must be concise (500-600 lines max) and avoid verbose content
+- **Override mechanism**: If validation fails, users can override with explicit acknowledgment (not recommended)
+- **Quality tracking**: Validation status and scores are recorded in STATUS.md for traceability
+- **Fix and re-validate**: If validation fails, fix critical issues and re-run `/validate` before proceeding
 
 ## Validation
 
 After Development command:
-- [ ] Tech spec file created
-- [ ] All sections present
-- [ ] Architecture documented
+- [ ] Tech spec file created at `features/{feature-name}/tech-spec.md`
+- [ ] All required sections present (System Architecture, Technology Stack, Command Structure, File System Structure, Data Models, MCP Integration, Command Implementation, Error Handling)
+- [ ] Architecture documented with principles and diagrams
 - [ ] Technology stack recommended with justification
-- [ ] MCP integration documented
+- [ ] MCP integration documented (required and optional servers)
 - [ ] Error handling documented
-- [ ] STATUS.md updated with Development completed
+- [ ] Tech spec validated using `/validate` command
+- [ ] Validation report generated at `features/{feature-name}/tech-spec-validation-report.md`
+- [ ] Quality score meets threshold (≥ 70/100)
+- [ ] STATUS.md updated with:
+  - [ ] tech-spec.md artifact added
+  - [ ] Development phase marked complete
+  - [ ] Current phase set to Task Planning
+  - [ ] Validation status (PASS/FAIL/CONDITIONAL/OVERRIDE)
+  - [ ] Quality score recorded
+  - [ ] Validation report path recorded

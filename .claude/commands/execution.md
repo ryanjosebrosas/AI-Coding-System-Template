@@ -26,11 +26,61 @@ inputs:
 
 Execute tasks step-by-step following the task plan and PRP guidance. This command loads the task plan and PRP, executes tasks sequentially using Archon MCP for tracking, handles errors with checkpoint/resume, and updates STATUS.md with progress.
 
+## MCP Query Caching
+
+This command implements intelligent caching for all Archon MCP queries to improve performance:
+
+**Cache Storage**: `.auto-claude/performance_cache.json` → `mcp_cache` object
+
+**Cache Entry Format**:
+```json
+{
+  "mcp_cache": {
+    "health_check": {
+      "result": {...},
+      "cached_at": "2026-01-27T00:00:00Z",
+      "ttl": 300
+    },
+    "find_tasks:task-id": {
+      "result": {...},
+      "cached_at": "2026-01-27T00:00:00Z",
+      "ttl": 300
+    },
+    "update_task:task-id:doing": {
+      "result": {...},
+      "cached_at": "2026-01-27T00:00:00Z",
+      "ttl": 300
+    }
+  }
+}
+```
+
+**Cache Key Patterns**:
+- Health check: `health_check`
+- Find tasks: `find_tasks:{task_id}` or `find_tasks:{filter_by}:{filter_value}`
+- Update task: `update_task:{task_id}:{status}`
+- RAG search: `rag_search:{query}:{source_id}`
+
+**TTL Values**:
+- Health check: 5 minutes (300s)
+- Task lookup: 5 minutes (300s)
+- Task updates: 5 minutes (300s)
+- RAG searches: 30 minutes (1800s)
+
+**Cache Logic**:
+1. Before each MCP query, check cache for matching key
+2. If cache hit and TTL valid, use cached result (increment `cache_hits`)
+3. If cache miss or TTL expired, execute MCP query (increment `cache_misses`)
+4. Store query result in cache with current timestamp
+5. Update `performance_cache.json` after each operation
+
+**Note**: Task status updates are cached briefly to avoid redundant MCP calls during execution, but actual task status in Archon remains source of truth.
+
 ## Execution Steps
 
 ### Step 1: Load Task Plan and PRP
 
-Load execution artifacts:
+Load execution artifacts with MCP caching:
 
 1. **Load task plan**:
    - Read `features/{feature-name}/task-plan.md`
@@ -42,22 +92,16 @@ Load execution artifacts:
    - Parse implementation blueprint
    - Extract codebase patterns and validation commands
 
-3. **Verify Archon MCP availability**:
-   - Call `health_check()` to verify server is available
+3. **Verify Archon MCP availability with caching**:
+   - Generate cache key: `health_check`
+   - Check `.auto-claude/performance_cache.json` for cached result
+   - If cache hit and TTL valid (5 minutes), use cached result
+   - If cache miss or TTL expired, call `health_check()` to verify server is available
+   - Store result in cache with current timestamp and 5-minute TTL
+   - Update `performance_metrics.cache_hits` or `cache_misses` accordingly
    - If unavailable, stop and inform user
 
-4. **Load tasks with caching**:
-   - Call `find_tasks()` to fetch task list for the project
-   - **Cache**: Task queries automatically cached by project ID for faster subsequent calls
-   - Parse task list with dependencies and priorities
-   - Extract task order for sequential execution
-
-**Cache Benefits**:
-- **Faster responses**: Cached task queries return instantly
-- **Token efficiency**: Reduces redundant Archon MCP server calls
-- **Better performance**: Especially for repeated task status checks during execution
-
-**Expected Result**: Task plan and PRP loaded, Archon MCP verified, tasks loaded (from cache or fresh query).
+**Expected Result**: Task plan and PRP loaded, Archon MCP verified with caching.
 
 ### Step 2: Initialize Execution
 
@@ -80,13 +124,17 @@ Set up execution environment:
 
 ### Step 3: Execute Tasks Sequentially
 
-Execute each task following dependencies:
+Execute each task following dependencies with MCP caching:
 
 1. **For each task in task plan**:
    - Check task dependencies are complete
    - Read task file from `execution/{order}-{task-slug}.md`
-   - Mark task as "Doing" in Archon: `manage_task("update", task_id="...", status="doing")`
-     - **Cache**: Task updates batched to reduce server calls
+   - Mark task as "Doing" in Archon with caching:
+     - Generate cache key: `update_task:{task_id}:doing`
+     - Check cache for recent update (5-minute TTL)
+     - If cache miss, call `manage_task("update", task_id="...", status="doing")`
+     - Cache the update result
+     - Update cache hit/miss metrics
    - Load task context from PRP
    - Execute task following PRP Implementation Blueprint and task file steps
 
@@ -95,11 +143,16 @@ Execute each task following dependencies:
    - Follow step-by-step instructions from task file
    - Create/modify files as specified
    - Run validation commands if specified
+   - For any RAG queries during execution, use caching (30-minute TTL)
 
-3. **Update Progress**:
+3. **Update Progress with caching**:
    - Log task completion in `execution.md`
-   - Mark task as "Done" in Archon: `manage_task("update", task_id="...", status="done")`
-     - **Cache**: Task status updates cached and flushed periodically
+   - Mark task as "Done" in Archon with caching:
+     - Generate cache key: `update_task:{task_id}:done`
+     - Check cache for recent update (5-minute TTL)
+     - If cache miss, call `manage_task("update", task_id="...", status="done")`
+     - Cache the update result
+     - Update cache hit/miss metrics
    - **Delete the task file** from `execution/` folder
    - Update STATUS.md with progress
    - Update `execution/INDEX.md` to reflect completion
@@ -107,13 +160,12 @@ Execute each task following dependencies:
 4. **Checkpoint State**:
    - Save checkpoint after each task completes
    - Store current state for resume capability
-   - **Cache**: Checkpoint data stored locally for fast resume
 
 **Task File Cleanup**:
 - When task completes successfully, delete `execution/{order}-{task-slug}.md`
 - When all task files are deleted (only INDEX.md remains), feature is complete
 
-**Expected Result**: Tasks executed sequentially, progress tracked in Archon and STATUS.md.
+**Expected Result**: Tasks executed sequentially with MCP query caching, progress tracked in Archon and STATUS.md.
 
 ### Step 4: Handle Errors
 
@@ -200,21 +252,6 @@ Finalize execution:
 - **Task Execution Fails**: Log error, checkpoint state, suggest recovery
 - **Validation Fails**: Log validation errors, suggest fixes, ask user
 
-## MCP Tool Reference
-
-| Tool | Purpose | Parameters | Cache Behavior |
-|------|---------|------------|----------------|
-| `health_check()` | Verify Archon MCP availability | None | No caching (real-time status) |
-| `find_tasks()` | Fetch task list for project | project_id, task_id, filter_by, filter_value | Cached by project/filter (5 min TTL) |
-| `manage_task("update")` | Update task status | task_id, status, assignee, task_order | Batched updates, flushed periodically |
-| `rag_search_knowledge_base()` | Search knowledge base (if used) | query, source_id, match_count | Cached by query hash (1 hour TTL) |
-
-**Cache Performance Notes**:
-- Task queries (`find_tasks`) are cached to reduce redundant calls during execution
-- Task updates (`manage_task`) are batched and flushed to optimize performance
-- RAG searches (if PRP references knowledge base) benefit from existing cache
-- Cache invalidation happens automatically based on TTL or manual `/cache-invalidate`
-
 ## Checkpoint & Resume
 
 ### Checkpoint Format
@@ -254,8 +291,3 @@ Run validation as specified in PRP:
 - **Delete task files** from `execution/` folder after completion
 - When all task files deleted, feature is complete
 - Tasks exist in both Archon (source of truth) AND execution folder (local visibility)
-- **Archon MCP task caching**: Task queries cached by project ID (5 min TTL) to reduce redundant server calls
-- **Task update batching**: Status updates batched and flushed periodically for performance
-- **Cache management**: Use `/cache-invalidate --type mcp` to clear MCP cache if needed
-- **Cache stats**: Use `/cache-stats` to view cache hit rates and performance metrics
-- **Cache health**: Use `/cache-health` to check cache system status and TTL settings

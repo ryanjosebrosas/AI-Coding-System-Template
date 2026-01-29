@@ -24,14 +24,6 @@ inputs:
     required: true
 ---
 
-## Universal Core Reference
-
-This command is defined in: `../../../commands/test.md`
-
-This file provides Claude Code-specific prompt formatting and tool references.
-
----
-
 # Test Command
 
 ## Purpose
@@ -95,6 +87,59 @@ Execute test suites and capture output:
      - Mark as partial test run
 
 **Expected Result**: Test suites executed, output captured.
+
+### Step 2.5: Run Validation Gates
+
+Execute validation gates after test suites to verify code quality:
+
+1. **Load validation configuration**:
+   - Load PRP (already loaded in Step 1)
+   - Extract: Validation gates, quality thresholds, security rules
+   - Identify codebase patterns (language, build tools, linting config)
+
+2. **Execute syntax checking**:
+   - Run syntax check:
+     - JavaScript/TypeScript: `npm run build` or `tsc --noEmit`
+     - Python: `python -m py_compile` or `mypy`
+     - Rust: `cargo check`
+     - Go: `go build`
+   - Capture syntax errors with file locations and line numbers
+   - Categorize: Fatal (syntax errors) or Warning (type errors)
+
+3. **Execute linting**:
+   - Run linter:
+     - JavaScript/TypeScript: `npm run lint` or `eslint .`
+     - Python: `pylint` or `ruff check`
+     - Rust: `cargo clippy`
+     - Go: `golangci-lint run`
+   - Capture linting violations (rule, file, line, severity)
+   - Categorize: Fatal (critical errors) or Warning (style issues)
+
+4. **Execute security scanning**:
+   - Run security scan:
+     - JavaScript/TypeScript: `npm audit`, `snyk test`, or `semgrep`
+     - Python: `bandit`, `safety check`
+     - Rust: `cargo-audit`
+     - General: `semgrep --config auto`
+   - Scan for vulnerabilities (memory safety, injection, unsafe patterns)
+   - Categorize: Fatal (critical/high severity) or Warning (medium/low severity)
+
+5. **Execute formatting validation**:
+   - Run format checker:
+     - JavaScript/TypeScript: `prettier --check .`
+     - Python: `black --check .` or `ruff check`
+     - Rust: `cargo fmt --check`
+     - Go: `gofmt -l .`
+   - Capture formatting issues
+   - Categorize: Warning (non-blocking)
+
+6. **Handle validation gate errors**:
+   - If validation gate fails to execute:
+     - Log error: "Validation gate {gate_name} failed: {error}"
+     - Continue with remaining gates
+     - Mark as partial validation run
+
+**Expected Result**: Validation gates executed, results categorized by severity.
 
 ### Step 3: Detect Errors
 
@@ -170,6 +215,9 @@ Compile findings into comprehensive test report:
    ## Test Suites
    {Results from each test suite}
 
+   ## Validation Gates
+   {Results from validation gates}
+
    ## Errors Detected
    {List of errors with details}
 
@@ -188,7 +236,8 @@ Compile findings into comprehensive test report:
 
 2. **Populate content**:
    - Fill in: Test summary from Step 2
-   - Fill in: Errors detected from Step 3
+   - Fill in: Validation gate results from Step 2.5
+   - Fill in: Errors detected from Step 3 (includes test and validation errors)
    - Fill in: Fix suggestions from Step 4
    - Fill in: Coverage report from Step 2
    - Fill in: Acceptance criteria verification
@@ -254,6 +303,65 @@ Compile findings into comprehensive test report:
 - **Duration**: {duration}
 - **Command**: {test_command}
 
+## Validation Gates
+
+### Syntax Checking
+- **Status**: {Pass/Fail}
+- **Tool**: {syntax_checker}
+- **Duration**: {duration}
+- **Issues Found**: {count}
+  - Fatal: {count}
+  - Warning: {count}
+
+**Issues**:
+| File | Line | Error | Severity |
+|------|------|-------|----------|
+| {file} | {line} | {error} | {severity} |
+
+### Linting
+- **Status**: {Pass/Fail}
+- **Tool**: {linter}
+- **Duration**: {duration}
+- **Issues Found**: {count}
+  - Fatal: {count}
+  - Warning: {count}
+
+**Issues**:
+| File | Line | Rule | Severity | Description |
+|------|------|------|----------|-------------|
+| {file} | {line} | {rule} | {severity} | {description} |
+
+### Security Scanning
+- **Status**: {Pass/Fail}
+- **Tool**: {security_scanner}
+- **Duration**: {duration}
+- **Vulnerabilities Found**: {count}
+  - Critical/High: {count}
+  - Medium/Low: {count}
+
+**Vulnerabilities**:
+| File | Line | Vulnerability | Severity | Fix Recommendation |
+|------|------|----------------|----------|-------------------|
+| {file} | {line} | {vulnerability} | {severity} | {fix} |
+
+### Formatting Validation
+- **Status**: {Pass/Fail}
+- **Tool**: {format_checker}
+- **Duration**: {duration}
+- **Files with Issues**: {count}
+
+**Formatting Issues**:
+| File | Issue | Fix Command |
+|------|-------|-------------|
+| {file} | {description} | {fix_command} |
+
+### Validation Summary
+- **Total Gates**: {count}
+- **Passed**: {count}
+- **Failed**: {count}
+- **Fatal Issues**: {count}
+- **Warning Issues**: {count}
+
 ## Errors Detected
 
 | Test | Type | Error Message | Stack Trace | Severity |
@@ -299,17 +407,42 @@ Compile findings into comprehensive test report:
 - **Gaps Identified**: {count}
 - **Blocking Issues**: {count}
 
-## Recommendation
+## Approval Status
 
-### Status
-{Overall test result status: Pass/Fail/Partial}
+**Status**: {Approved / Approved with Changes / Blocked}
 
-### Next Steps
-{Recommended actions based on test results}
+**Validation Impact**: {Approval status based on validation gate results and test results}
 
-- If all tests pass: Proceed to deployment or review
-- If tests fail: Fix errors, re-run tests
-- If coverage low: Add tests, re-run coverage
+**Conditions for Approval**:
+- All tests pass (unit, integration, E2E if applicable)
+- All fatal validation issues resolved (syntax, critical linting, critical/high security vulnerabilities)
+- Warning-level issues documented and acknowledged
+- Acceptance criteria met
+- Coverage requirements satisfied (if applicable)
+
+**Blocking Issues**:
+- **Fatal Validation Failures**: {Any fatal issues from validation gates that block approval}
+  - Syntax errors: {count}
+  - Critical linting violations: {count}
+  - Critical/High security vulnerabilities: {count}
+- **Test Failures**: {Unresolved test failures that block approval}
+  - Failed unit tests: {count}
+  - Failed integration tests: {count}
+  - Failed E2E tests: {count}
+
+**Approval Determination**:
+- **Approved**: All tests pass, no fatal validation issues, acceptance criteria met
+- **Approved with Changes**: Minor warnings only, tests pass, acceptance criteria met
+- **Blocked**: Fatal validation failures exist, test failures exist, or acceptance criteria not met
+
+**Next Steps**:
+{Recommended actions based on test and validation results}
+
+- If approved: Proceed to review or deployment phase
+- If approved with changes: Document warnings, proceed to review phase
+- If blocked: Fix fatal issues and test failures, re-run /test command before proceeding
+
+**Note**: Fatal validation failures (syntax errors, critical linting violations, critical/high security vulnerabilities) **must** be resolved before approval. These issues block progression to review and deployment phases.
 ```
 
 ## Error Handling
@@ -319,16 +452,23 @@ Compile findings into comprehensive test report:
 - **Test Framework Not Found**: Use default test commands (npm run test, pytest)
 - **Test Command Fails**: Log error, mark as partial test run, continue with available results
 - **Coverage Analysis Fails**: Log error, continue without coverage report
+- **Validation Gate Fails**: Log error, mark as partial validation run, continue with remaining gates
+- **Syntax Check Fails**: Categorize as fatal, continue with remaining validation gates
+- **Linting Fails**: Categorize as fatal or warning based on severity, continue with remaining gates
+- **Security Scan Fails**: Log error, continue with other validation gates
 - **AI Analysis Fails**: Log error, generate test report without fix suggestions
 - **Acceptance Criteria Verification Fails**: Log which criterion failed, continue with other checks
 
 ## Notes
 
 - Test command automates test execution and error detection
+- Validation gates (syntax, linting, security, formatting) run after test suites to verify code quality
+- Validation results are incorporated into the test report alongside test results
 - AI-suggested fixes provide actionable guidance for fixing errors
 - Coverage reports help identify untested code
 - Acceptance criteria verification ensures PRD requirements are met
 - Test results are stored both with feature and globally
 - Test results feed into review and deployment phases
-- If all tests pass, proceed to review or deployment
-- If tests fail, fix errors and re-run tests before proceeding
+- If all tests pass and validation gates pass, proceed to review or deployment
+- If tests fail or validation gates fail, fix errors and re-run tests before proceeding
+- Validation gate failures are categorized as fatal (blocking) or warning (non-blocking)

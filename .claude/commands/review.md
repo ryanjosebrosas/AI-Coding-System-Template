@@ -25,14 +25,12 @@ inputs:
   - path: "features/{feature-name}/execution.md"
     description: "Execution log with completed tasks"
     required: true
----
-
-## Universal Core Reference
-
-This command is defined in: `../../../commands/review.md`
-
-This file provides Claude Code-specific prompt formatting and tool references.
-
+  - path: "features/{feature-name}/validation-report.md"
+    description: "Validation report from automated quality gates"
+    required: false
+  - path: "validation/validation-{timestamp}.md"
+    description: "Timestamped validation report from validation directory"
+    required: false
 ---
 
 # Review Command
@@ -101,6 +99,46 @@ Use AI/MCP to analyze code quality (best practices, security, performance):
    - Use results to enhance review
 
 **Expected Result**: Code quality issues identified and categorized.
+
+### Step 2.5: Run Validation Gates
+
+Execute or load automated validation gates to complement manual code review:
+
+1. **Check for existing validation report**:
+   - Look for `features/{feature-name}/validation-report.md`
+   - Look for recent `validation/validation-*.md` files
+   - If found and recent (within last hour), load it
+   - If not found or stale, proceed to execute validation gates
+
+2. **Execute validation gates** (if needed):
+   - Run `/validate` command to execute automated quality gates
+   - Wait for validation completion
+   - Parse validation report output
+   - Extract: Syntax results, linting results, test results, security scan results, formatting results
+
+3. **Load and parse validation results**:
+   - Read validation report from `features/{feature-name}/validation-report.md`
+   - Extract severity breakdown (Critical, High, Medium, Low, Warning)
+   - Extract validation gate results (syntax, linting, tests, security, formatting)
+   - Extract specific issues found by automated gates
+   - Extract overall validation status (Pass, Fail, Warning)
+
+4. **Correlate validation results with manual review**:
+   - Compare validation findings with manual AI analysis from Step 2
+   - Identify issues caught by both automation and manual review
+   - Identify issues only caught by automation
+   - Identify issues only caught by manual review
+   - Flag potential false positives from automation
+   - Flag potential false negatives from automation (issues manual review found that automation missed)
+
+5. **Integrate validation results into quality analysis**:
+   - Merge validation issues into quality issues categorization
+   - Prioritize validation Fatal issues as Critical in review
+   - Add validation Warning issues to Medium/Low priority in review
+   - Document validation gate coverage (which gates passed/failed)
+   - Use validation results to enhance manual review findings
+
+**Expected Result**: Validation gates executed or loaded, results correlated with manual review, integrated into quality analysis.
 
 ### Step 3: Verify Compliance
 
@@ -174,11 +212,12 @@ Compile findings into comprehensive review report:
 
 2. **Populate content**:
    - Fill in: Code changes from Step 1
-   - Fill in: Quality issues from Step 2
-   - Fill in: Security findings from Step 2
+   - Fill in: Quality issues from Step 2 and Step 2.5 (manual + automated)
+   - Fill in: Security findings from Step 2 and Step 2.5 (manual + automated)
    - Fill in: Performance findings from Step 2
+   - Fill in: Validation gates summary from Step 2.5
    - Fill in: Compliance verification from Step 3
-   - Fill in: Prioritized recommendations
+   - Fill in: Prioritized recommendations (combining manual and automated findings)
 
 3. **Generate timestamp**:
    - Use ISO 8601 format: YYYY-MM-DDTHH:mm:ssZ
@@ -237,6 +276,41 @@ Compile findings into comprehensive review report:
 | File | Reason |
 |------|--------|
 | {path} | {reason} |
+
+## Validation Gates
+
+### Automated Check Results
+{If validation report exists, include summary of automated validation results}
+
+**Validation Status**: {Pass/Fail/Warning/Not Run}
+**Validation Date**: {timestamp}
+**Validation Report**: {link-to-validation-report}
+
+### Severity Breakdown
+| Severity | Count | From Validation | From Manual Review |
+|----------|-------|-----------------|-------------------|
+| Critical | {count} | {count} | {count} |
+| High | {count} | {count} | {count} |
+| Medium | {count} | {count} | {count} |
+| Low | {count} | {count} | {count} |
+
+### Integration with Manual Review Findings
+{Correlation between automated validation results and manual review findings}
+
+**Automated Validation Summary**:
+- Total Gates Executed: {count}
+- Passed: {count}
+- Failed: {count}
+- Warnings: {count}
+- Fatal Issues: {count}
+
+**Manual Review Additions**:
+- Issues found by manual review not caught by automation: {count}
+- False positives from automation: {count}
+- Net new issues from manual review: {count}
+
+**Quality Assessment**:
+{How automated validation results align with manual review findings}
 
 ## Quality Issues
 
