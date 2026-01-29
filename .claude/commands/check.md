@@ -49,24 +49,30 @@ Run systematic checks across the codebase:
 - `discovery/*.md` (except INDEX.md) - Old discovery documents
 - `/check` is typically run when finishing a project, so these can be cleaned
 
-**1.5 Check documentation consistency:**
+**1.6 Check for completed feature folders to clean:**
+- Scan `features/*/STATUS.md` for features marked as "Complete" or "Execution - Complete"
+- Check Archon for active tasks (if no active tasks, feature is complete)
+- Completed feature folders contain: `prp.md`, `task-plan.md`, `execution.md`, `STATUS.md`, `execution/`
+- These artifacts should be deleted when feature is fully complete
+
+**1.7 Check documentation consistency:**
 - Root `INDEX.md` - Should list all commands
 - `features/INDEX.md` - Should reflect current feature statuses
 - `context/INDEX.md` - Should list all prime exports
 - `discovery/INDEX.md` - Should list all discovery documents
 - `execution/INDEX.md` - Should list all execution tasks
 
-**1.6 Check for outdated status references:**
+**1.8 Check for outdated status references:**
 - Feature STATUS.md files - Should match actual completion state
 - Compare features/INDEX.md status with feature/STATUS.md
 - Check for "Ready for X" phases that are actually complete
 
-**1.7 Check command file integrity:**
+**1.9 Check command file integrity:**
 - All commands in `.claude/commands/` should have proper YAML frontmatter
 - All commands listed in INDEX.md should exist
 - No orphaned or missing command files
 
-**1.8 Check template files:**
+**1.10 Check template files:**
 - PRP templates should exist in `templates/prp/`
 - STATUS.md template should exist in `.claude/templates/`
 
@@ -93,18 +99,26 @@ Apply fixes for common issues:
 # Remove discovery/*.md except INDEX.md (clean old discoveries)
 ```
 
-**2.4 Update outdated INDEX.md entries:**
+**2.4 Delete completed feature folders:**
+```bash
+# For each feature in features/*/STATUS.md marked complete:
+# - Delete entire features/{feature-name}/ folder
+# - Update features/INDEX.md to move feature to "Completed Features" section
+# - Preserve features/INDEX.md as the directory index
+```
+
+**2.5 Update outdated INDEX.md entries:**
 - Update feature statuses to match actual completion
 - Update last updated dates
 - Add missing commands to command tables
 - Add completed features to status sections
 
-**2.5 Fix INDEX.md inconsistencies:**
+**2.6 Fix INDEX.md inconsistencies:**
 - Fix INDEX.md inconsistencies by calling update-index with regenerate=true for directories with mismatches
 - Automatically regenerate INDEX.md files that don't match actual directory contents
 - This ensures all INDEX.md files stay synchronized with the codebase structure
 
-**2.6 Update .claude/settings.local.json permissions:**
+**2.7 Update .claude/settings.local.json permissions:**
 - Add permissions for commonly used git commands
 - Add permissions for Archon MCP tools used in project
 
@@ -215,6 +229,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 | Pattern | Description | Action |
 |---------|-------------|--------|
+| `features/{name}/*` | Completed feature artifacts | Delete entire folder when feature complete |
 | `context/prime-*.md` | Context export files (large!) | Keep latest 2-3, delete rest |
 | `.prime-cache.json` | Prime cache for diff output | Delete (reset cache) |
 | `discovery/*.md` | Discovery documents | Delete all except INDEX.md |
